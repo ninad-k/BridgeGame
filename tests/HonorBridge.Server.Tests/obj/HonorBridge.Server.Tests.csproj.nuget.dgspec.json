@@ -1,0 +1,294 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/ninadk/Projects/BridgeGame/tests/HonorBridge.Server.Tests/HonorBridge.Server.Tests.csproj": {}
+  },
+  "projects": {
+    "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/HonorBridge.AI.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/HonorBridge.AI.csproj",
+        "projectName": "HonorBridge.AI",
+        "projectPath": "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/HonorBridge.AI.csproj",
+        "packagesPath": "/Users/ninadk/.nuget/packages/",
+        "outputPath": "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/ninadk/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/opt/homebrew/Cellar/dotnet/9.0.8/libexec/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/HonorBridge.Engine.csproj": {
+                "projectPath": "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/HonorBridge.Engine.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/9.0.8/libexec/sdk/9.0.109/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/HonorBridge.Engine.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/HonorBridge.Engine.csproj",
+        "projectName": "HonorBridge.Engine",
+        "projectPath": "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/HonorBridge.Engine.csproj",
+        "packagesPath": "/Users/ninadk/.nuget/packages/",
+        "outputPath": "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/ninadk/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/opt/homebrew/Cellar/dotnet/9.0.8/libexec/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/9.0.8/libexec/sdk/9.0.109/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Server/HonorBridge.Server.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Server/HonorBridge.Server.csproj",
+        "projectName": "HonorBridge.Server",
+        "projectPath": "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Server/HonorBridge.Server.csproj",
+        "packagesPath": "/Users/ninadk/.nuget/packages/",
+        "outputPath": "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Server/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/ninadk/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/opt/homebrew/Cellar/dotnet/9.0.8/libexec/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/HonorBridge.AI.csproj": {
+                "projectPath": "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/HonorBridge.AI.csproj"
+              },
+              "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/HonorBridge.Engine.csproj": {
+                "projectPath": "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/HonorBridge.Engine.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/9.0.8/libexec/sdk/9.0.109/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/ninadk/Projects/BridgeGame/tests/HonorBridge.Server.Tests/HonorBridge.Server.Tests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/ninadk/Projects/BridgeGame/tests/HonorBridge.Server.Tests/HonorBridge.Server.Tests.csproj",
+        "projectName": "HonorBridge.Server.Tests",
+        "projectPath": "/Users/ninadk/Projects/BridgeGame/tests/HonorBridge.Server.Tests/HonorBridge.Server.Tests.csproj",
+        "packagesPath": "/Users/ninadk/.nuget/packages/",
+        "outputPath": "/Users/ninadk/Projects/BridgeGame/tests/HonorBridge.Server.Tests/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/ninadk/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/opt/homebrew/Cellar/dotnet/9.0.8/libexec/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Server/HonorBridge.Server.csproj": {
+                "projectPath": "/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Server/HonorBridge.Server.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.12.0, )"
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[6.0.2, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.9.2, )"
+            },
+            "xunit.runner.visualstudio": {
+              "target": "Package",
+              "version": "[2.8.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/9.0.8/libexec/sdk/9.0.109/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

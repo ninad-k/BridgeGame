@@ -1,0 +1,6 @@
+@HonorBridge.Server_HostAddress = http://localhost:5048
+
+GET {{HonorBridge.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

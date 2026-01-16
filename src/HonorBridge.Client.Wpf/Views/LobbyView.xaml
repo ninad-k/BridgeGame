@@ -1,0 +1,46 @@
+<UserControl x:Class="HonorBridge.Client.Wpf.Views.LobbyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="#F0F0F0">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="300">
+            <TextBlock Text="Honor Bridge" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+            
+            <TextBlock Text="Player Name:" Margin="0,5,0,0"/>
+            <TextBox Text="{Binding PlayerName, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
+            
+            <TextBlock Text="Room ID:" Margin="0,10,0,0"/>
+            <TextBox Text="{Binding RoomId, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
+            
+            <Button Command="{Binding JoinCommand}" Content="Join Table" Margin="0,20,0,0" Padding="10,5"/>
+            
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                <Button Command="{Binding DataContext.NavigateHowToPlayCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                        Content="How to Play" Margin="0,0,10,0" Padding="10,5"/>
+                <Button Command="{Binding DataContext.NavigateHelpCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                        Content="Rules" Margin="0,0,10,0" Padding="10,5"/>
+                <Button Command="{Binding DataContext.NavigateAboutCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                        Content="About" Padding="10,5"/>
+            </StackPanel>
+            
+            <Button Command="{Binding DataContext.NavigateSettingsCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                    Content="Options" Margin="0,10,0,0" Padding="10,5" HorizontalAlignment="Center"/>
+            
+            <ProgressBar IsIndeterminate="True" Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" Height="5" Margin="0,10,0,0">
+               <ProgressBar.Style>
+                    <Style TargetType="ProgressBar">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+               </ProgressBar.Style>
+            </ProgressBar>
+        </StackPanel>
+    </Grid>
+</UserControl>

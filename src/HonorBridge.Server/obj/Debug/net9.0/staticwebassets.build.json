@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "wvhPIHNCDpSwZhAxRvBIaB3XAB6t7wWgXzqhu2CNnkw=",
+  "Source": "HonorBridge.Server",
+  "BasePath": "_content/HonorBridge.Server",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

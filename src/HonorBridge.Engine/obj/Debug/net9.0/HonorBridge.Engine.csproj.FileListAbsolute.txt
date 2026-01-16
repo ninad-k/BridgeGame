@@ -1,0 +1,12 @@
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/bin/Debug/net9.0/HonorBridge.Engine.deps.json
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/bin/Debug/net9.0/HonorBridge.Engine.dll
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/bin/Debug/net9.0/HonorBridge.Engine.pdb
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/obj/Debug/net9.0/HonorBridge.Engine.GeneratedMSBuildEditorConfig.editorconfig
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/obj/Debug/net9.0/HonorBridge.Engine.AssemblyInfoInputs.cache
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/obj/Debug/net9.0/HonorBridge.Engine.AssemblyInfo.cs
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/obj/Debug/net9.0/HonorBridge.Engine.csproj.CoreCompileInputs.cache
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/obj/Debug/net9.0/HonorBridge.Engine.sourcelink.json
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/obj/Debug/net9.0/HonorBridge.Engine.dll
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/obj/Debug/net9.0/refint/HonorBridge.Engine.dll
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/obj/Debug/net9.0/HonorBridge.Engine.pdb
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.Engine/obj/Debug/net9.0/ref/HonorBridge.Engine.dll

@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Play Game" type="CompoundRunConfigurationType">
+    <toRun name="Server" type="DotNetProject" />
+    <toRun name="Client" type="DotNetProject" />
+    <method v="2" />
+  </configuration>
+</component>

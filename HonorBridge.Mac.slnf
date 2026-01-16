@@ -1,0 +1,12 @@
+{
+  "solution": {
+    "path": "HonorBridge.sln",
+    "projects": [
+      "src\\HonorBridge.AI\\HonorBridge.AI.csproj",
+      "src\\HonorBridge.Engine\\HonorBridge.Engine.csproj",
+      "src\\HonorBridge.Server\\HonorBridge.Server.csproj",
+      "tests\\HonorBridge.Engine.Tests\\HonorBridge.Engine.Tests.csproj",
+      "tests\\HonorBridge.Server.Tests\\HonorBridge.Server.Tests.csproj"
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/bin/Debug/net9.0/HonorBridge.AI.deps.json
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/bin/Debug/net9.0/HonorBridge.AI.dll
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/bin/Debug/net9.0/HonorBridge.AI.pdb
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/bin/Debug/net9.0/HonorBridge.Engine.dll
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/bin/Debug/net9.0/HonorBridge.Engine.pdb
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/obj/Debug/net9.0/HonorBridge.AI.csproj.AssemblyReference.cache
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/obj/Debug/net9.0/HonorBridge.AI.GeneratedMSBuildEditorConfig.editorconfig
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/obj/Debug/net9.0/HonorBridge.AI.AssemblyInfoInputs.cache
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/obj/Debug/net9.0/HonorBridge.AI.AssemblyInfo.cs
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/obj/Debug/net9.0/HonorBridge.AI.csproj.CoreCompileInputs.cache
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/obj/Debug/net9.0/HonorBridge.AI.sourcelink.json
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/obj/Debug/net9.0/HonorBri.26D073D4.Up2Date
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/obj/Debug/net9.0/HonorBridge.AI.dll
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/obj/Debug/net9.0/refint/HonorBridge.AI.dll
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/obj/Debug/net9.0/HonorBridge.AI.pdb
+/Users/ninadk/Projects/BridgeGame/src/HonorBridge.AI/obj/Debug/net9.0/ref/HonorBridge.AI.dll
