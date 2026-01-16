@@ -16,10 +16,10 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 9.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore HonorBridge.Mac.slnf
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build HonorBridge.Mac.slnf --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test HonorBridge.Mac.slnf --no-build --verbosity normal
