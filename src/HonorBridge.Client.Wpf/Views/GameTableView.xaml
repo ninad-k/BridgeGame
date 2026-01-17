@@ -222,7 +222,7 @@
                                     CommandParameter="{Binding Id}"
                                     Content="{Binding}"
                                     ContentTemplate="{StaticResource CardTemplate}"
-                                    Margin="-30,0,0,0" Padding="0" BorderThickness="0" Background="Transparent"
+                                    Margin="0" Padding="0" BorderThickness="0" Background="Transparent"
                                     RenderTransformOrigin="0.5,0.5">
                                 <Button.RenderTransform>
                                     <TranslateTransform X="0" Y="0"/>
