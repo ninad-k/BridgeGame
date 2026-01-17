@@ -210,3 +210,4 @@ public class ParametricBidder : IBiddingSystem
         if (candidate.IsSufficient(current)) return candidate;
         return Bid.Pass;
     }
+}
