@@ -140,7 +140,26 @@ public partial class GameTableViewModel : ObservableObject
         if (dummySeat == "North") targetCollection = DummyHandNorth;
         else if (dummySeat == "East") targetCollection = DummyHandEast;
         else if (dummySeat == "West") targetCollection = DummyHandWest;
-        else if (dummySeat == "South") targetCollection = DummyHandSouth;
+        // else if (dummySeat == "South") targetCollection = DummyHandSouth; 
+        // FIX: If Dummy is South (Me), MyHand already shows my cards. 
+        // Logic: If dummySeat == MySeat, do NOT populate Dummy Hand collection for Visual Display?
+        // Wait, standard bridge: Dummy Hand is "Laid Down". My Hand is "Held".
+        // If I am Dummy, I "Lay Down" my cards.
+        // So actually, MyHand should be EMPTY, and DummyHandSouth should be FULL?
+        // OR MyHand stays full, and we just hide DummyHandSouth.
+        // User saw duplicates.
+        // Let's stick with: If (dummySeat == "South"), and I am South, I rely on MyHand.
+        // However, MyHand is for "Playing". DummyHand is for "Displaying".
+        // If I am Dummy, can I play? Normally NO. Declarer plays.
+        // But here, Declarer is Bot-North. And I am playing *for* Bot-North.
+        // And I am also playing for Myself (Dummy). (Effective Declarer plays Dummy).
+        // So I control BOTH.
+        // If I control both, I need both visible.
+        // But if MyHand == DummyHand, seeing it twice is weird.
+        // Let's disable DummyHandSouth if dummySeat == MySeat.
+        
+        else if (dummySeat == "South" && !(State.MySeat == "South")) targetCollection = DummyHandSouth; // Only show if I am NOT South
+        else if (dummySeat == "South") { } // I am South-Dummy. My cards are in MyHand. Don't dup.
         
         // Populate Dummy
         if (targetCollection != null)

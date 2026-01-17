@@ -242,6 +242,12 @@ public class GameRoom
                         // Effective Declarer playing their own hand (or the hand they took over)
                         isHumanTurn = IsHuman(effectiveDeclarer);
                     }
+                    else if (turn == CurrentPlay.Declarer && effectiveDeclarer != turn)
+                    {
+                        // Declarer is Bot, but EffectiveDeclarer is Human Partner.
+                        // So Turn is Declarer's, but Human should play.
+                        isHumanTurn = IsHuman(effectiveDeclarer);
+                    }
                     else
                     {
                         // Defender or normal play
