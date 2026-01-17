@@ -16,8 +16,13 @@ public partial class GameTableViewModel : ObservableObject
     
     // Derived properties for UI binding
     public ObservableCollection<CardViewModel> MyHand { get; } = new();
-    public ObservableCollection<CardViewModel> DummyHand { get; } = new();
     
+    // Split Dummy Hands for correct visual placement
+    public ObservableCollection<CardViewModel> DummyHandNorth { get; } = new();
+    public ObservableCollection<CardViewModel> DummyHandEast { get; } = new();
+    public ObservableCollection<CardViewModel> DummyHandWest { get; } = new();
+    public ObservableCollection<CardViewModel> DummyHandSouth { get; } = new(); // Rare (if I am Dummy?) - Usually MyHand is shown.
+
     // Played Cards for Trick (Dictionary mapping Compass -> CardViewModel)
     // We can't bind Dictionary directly to UI easily for updates if Keys change, but values change.
     // ObservableDictionary? Or just properties?
@@ -117,33 +122,40 @@ public partial class GameTableViewModel : ObservableObject
             MyHand.Add(c);
         }
         
-        DummyHand.Clear();
+        DummyHandNorth.Clear();
+        DummyHandEast.Clear();
+        DummyHandWest.Clear();
+        DummyHandSouth.Clear();
+
         var dummyCards = state.DummyHand.Select(c => new CardViewModel(c)).ToList();
         
-        // When can I play Dummy cards?
-        // If I am Declarer AND It is Dummy's Turn.
-        bool isDummyTurn = (!string.IsNullOrEmpty(state.Declarer) && state.NextToAct == GetPartner(state.Declarer)); // Approx logic?
-        // Better: State.NextToAct is a Compass string.
-        // We need to know who is Dummy. Dummy is Partner of Declarer.
-        // If I am Declarer, and NextToAct is Dummy...
-        
         bool canPlayDummy = false;
-        if (!string.IsNullOrEmpty(state.Declarer) && !string.IsNullOrEmpty(state.MySeat))
+        string dummySeat = "";
+        
+        if (!string.IsNullOrEmpty(state.Declarer))
         {
-             if (state.Declarer == state.MySeat)
+             dummySeat = GetPartnerSeat(state.Declarer);
+             
+             // Logic for Interactivity (unchanged)
+             if (!string.IsNullOrEmpty(state.MySeat) && state.Declarer == state.MySeat)
              {
-                 // I am declarer. Is it Dummy's turn?
-                 // Dummy is NOT stored in Dto explicitly, but we can deduce or strict check NextToAct.
-                 // If state.NextToAct == Partner(MySeat).
-                 string dummySeat = GetPartnerSeat(state.MySeat); // Helper needed
                  if (state.NextToAct == dummySeat) canPlayDummy = true;
              }
         }
-
-        foreach(var c in dummyCards)
+        
+        ObservableCollection<CardViewModel> targetCollection = null;
+        if (dummySeat == "North") targetCollection = DummyHandNorth;
+        else if (dummySeat == "East") targetCollection = DummyHandEast;
+        else if (dummySeat == "West") targetCollection = DummyHandWest;
+        else if (dummySeat == "South") targetCollection = DummyHandSouth; // Should be MyHand usually, but if distinct...
+        
+        if (targetCollection != null)
         {
-            c.IsEnabled = canPlayDummy;
-            DummyHand.Add(c);
+            foreach(var c in dummyCards)
+            {
+                c.IsEnabled = canPlayDummy;
+                targetCollection.Add(c);
+            }
         }
         
         // Update Trick
