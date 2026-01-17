@@ -34,7 +34,6 @@ public partial class GameTableViewModel : ObservableObject
     [ObservableProperty] private string _lastCallWest = "";
     
     [ObservableProperty] private bool _isWinner;
-    [ObservableProperty] private bool _isWinner;
     [ObservableProperty] private string _winnerName = "";
 
     // Active Turn Indicators
