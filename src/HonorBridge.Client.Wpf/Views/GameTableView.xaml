@@ -32,6 +32,20 @@
                 </Grid>
             </Border>
         </DataTemplate>
+        
+        <Style x:Key="ActivePlayerBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="True">
+                     <Setter Property="Background" Value="#AAFFD700"/> <!-- Semi-transparent Gold -->
+                     <Setter Property="BorderBrush" Value="White"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
 
     <Grid Background="#0A420A"> <!-- Green Felt -->
@@ -60,7 +74,9 @@
         <Border Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Margin="0,40,0,0">
             <StackPanel>
                 <Button Command="{Binding SitCommand}" CommandParameter="North" Content="Sit North" Visibility="{Binding State.Seats[North], Converter={StaticResource NullToVis}}" />
-                <TextBlock Text="{Binding State.Seats[North]}" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold"/>
+                <Border Style="{StaticResource ActivePlayerBorderStyle}" Tag="{Binding IsTurnNorth}">
+                    <TextBlock Text="{Binding State.Seats[North]}" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold"/>
+                </Border>
                 
                 <!-- Last Call Bubble -->
                 <Border Background="White" CornerRadius="10" Padding="5" Margin="0,5,0,0" HorizontalAlignment="Center">
@@ -140,7 +156,9 @@
         <!-- West Seat -->
         <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="20,0,0,0">
              <Button Command="{Binding SitCommand}" CommandParameter="West" Content="Sit West" Visibility="{Binding State.Seats[West], Converter={StaticResource NullToVis}}" />
-             <TextBlock Text="{Binding State.Seats[West]}" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold"/>
+             <Border Style="{StaticResource ActivePlayerBorderStyle}" Tag="{Binding IsTurnWest}" HorizontalAlignment="Center">
+                <TextBlock Text="{Binding State.Seats[West]}" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold"/>
+             </Border>
              
              <!-- Last Call Bubble -->
              <Border Background="White" CornerRadius="10" Padding="5" Margin="0,5,0,0" HorizontalAlignment="Center">
@@ -164,7 +182,9 @@
         <!-- East Seat -->
         <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="0,0,20,0">
              <Button Command="{Binding SitCommand}" CommandParameter="East" Content="Sit East" Visibility="{Binding State.Seats[East], Converter={StaticResource NullToVis}}" />
-             <TextBlock Text="{Binding State.Seats[East]}" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold"/>
+             <Border Style="{StaticResource ActivePlayerBorderStyle}" Tag="{Binding IsTurnEast}" HorizontalAlignment="Center">
+                <TextBlock Text="{Binding State.Seats[East]}" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold"/>
+             </Border>
              
              <!-- Last Call Bubble -->
              <Border Background="White" CornerRadius="10" Padding="5" Margin="0,5,0,0" HorizontalAlignment="Center">
@@ -189,7 +209,9 @@
         <Border Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,20">
             <StackPanel>
                  <Button Command="{Binding SitCommand}" CommandParameter="South" Content="Sit South" Visibility="{Binding State.Seats[South], Converter={StaticResource NullToVis}}" />
-                 <TextBlock Text="{Binding State.Seats[South]}" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold"/>
+                 <Border Style="{StaticResource ActivePlayerBorderStyle}" Tag="{Binding IsTurnSouth}" HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding State.Seats[South]}" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold"/>
+                 </Border>
                  
                  <!-- Last Call Bubble -->
                  <Border Background="White" CornerRadius="10" Padding="5" Margin="0,5,0,0" HorizontalAlignment="Center">

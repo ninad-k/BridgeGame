@@ -34,7 +34,14 @@ public partial class GameTableViewModel : ObservableObject
     [ObservableProperty] private string _lastCallWest = "";
     
     [ObservableProperty] private bool _isWinner;
+    [ObservableProperty] private bool _isWinner;
     [ObservableProperty] private string _winnerName = "";
+
+    // Active Turn Indicators
+    [ObservableProperty] private bool _isTurnNorth;
+    [ObservableProperty] private bool _isTurnSouth;
+    [ObservableProperty] private bool _isTurnEast;
+    [ObservableProperty] private bool _isTurnWest;
 
     public ObservableCollection<string> AuctionHistory { get; } = new();
 
@@ -153,6 +160,12 @@ public partial class GameTableViewModel : ObservableObject
         
         UpdateBiddingAvailability();
         UpdateCallHistory();
+
+        // Update Turn Indicators
+        IsTurnNorth = (!string.IsNullOrEmpty(State.NextToAct) && State.NextToAct == "North");
+        IsTurnSouth = (!string.IsNullOrEmpty(State.NextToAct) && State.NextToAct == "South");
+        IsTurnEast = (!string.IsNullOrEmpty(State.NextToAct) && State.NextToAct == "East");
+        IsTurnWest = (!string.IsNullOrEmpty(State.NextToAct) && State.NextToAct == "West");
         
         System.Diagnostics.Debug.WriteLine($"[DEBUG] State Update: MySeat={State.MySeat}, Next={State.NextToAct}, Phase={State.Phase}, IsMyTurn={(!string.IsNullOrEmpty(state.MySeat) && state.NextToAct == state.MySeat)}");
         System.Console.WriteLine($"[DEBUG] State Update: MySeat={State.MySeat}, Next={State.NextToAct}, Phase={State.Phase}, IsMyTurn={(!string.IsNullOrEmpty(state.MySeat) && state.NextToAct == state.MySeat)}");
