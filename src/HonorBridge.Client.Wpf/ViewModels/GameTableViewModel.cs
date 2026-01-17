@@ -101,10 +101,44 @@ public partial class GameTableViewModel : ObservableObject
         State = state;
         
         MyHand.Clear();
-        foreach (var c in state.MyHand) MyHand.Add(new CardViewModel(c));
+        var myCards = state.MyHand.Select(c => new CardViewModel(c)).ToList();
+        
+        bool isMyTurn = (!string.IsNullOrEmpty(state.MySeat) && state.NextToAct == state.MySeat);
+        
+        foreach(var c in myCards) 
+        {
+            c.IsEnabled = isMyTurn;
+            MyHand.Add(c);
+        }
         
         DummyHand.Clear();
-        foreach (var c in state.DummyHand) DummyHand.Add(new CardViewModel(c));
+        var dummyCards = state.DummyHand.Select(c => new CardViewModel(c)).ToList();
+        
+        // When can I play Dummy cards?
+        // If I am Declarer AND It is Dummy's Turn.
+        bool isDummyTurn = (!string.IsNullOrEmpty(state.Declarer) && state.NextToAct == GetPartner(state.Declarer)); // Approx logic?
+        // Better: State.NextToAct is a Compass string.
+        // We need to know who is Dummy. Dummy is Partner of Declarer.
+        // If I am Declarer, and NextToAct is Dummy...
+        
+        bool canPlayDummy = false;
+        if (!string.IsNullOrEmpty(state.Declarer) && !string.IsNullOrEmpty(state.MySeat))
+        {
+             if (state.Declarer == state.MySeat)
+             {
+                 // I am declarer. Is it Dummy's turn?
+                 // Dummy is NOT stored in Dto explicitly, but we can deduce or strict check NextToAct.
+                 // If state.NextToAct == Partner(MySeat).
+                 string dummySeat = GetPartnerSeat(state.MySeat); // Helper needed
+                 if (state.NextToAct == dummySeat) canPlayDummy = true;
+             }
+        }
+
+        foreach(var c in dummyCards)
+        {
+            c.IsEnabled = canPlayDummy;
+            DummyHand.Add(c);
+        }
         
         // Update Trick
         CardNorth = null;

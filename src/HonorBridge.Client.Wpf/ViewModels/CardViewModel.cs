@@ -13,6 +13,9 @@ public partial class CardViewModel : ObservableObject
     public Brush Color { get; }
     public bool IsRed { get; }
 
+    [ObservableProperty]
+    private bool _isEnabled = true;
+
     public CardViewModel(string id)
     {
         Id = id;

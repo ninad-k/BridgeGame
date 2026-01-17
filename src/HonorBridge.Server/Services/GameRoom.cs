@@ -482,8 +482,11 @@ public class GameRoom
             dto.TricksNS = CurrentPlay.TricksWonNS;
             dto.TricksEW = CurrentPlay.TricksWonEW;
             
-            // Dummy Hand is visible
-            if (Hands.ContainsKey(CurrentPlay.Dummy))
+            // Dummy Hand is visible ONLY after opening lead (Turn 1 card 1)
+            // Opening lead is when CurrentTrick has 1 card, OR CompletedTricks > 0.
+            bool openingLeadMade = CurrentPlay.CompletedTricks.Count > 0 || CurrentPlay.CurrentTrick.Cards.Count > 0;
+            
+            if (openingLeadMade && Hands.ContainsKey(CurrentPlay.Dummy))
             {
                 dto.DummyHand = Hands[CurrentPlay.Dummy].Cards.Select(c => c.ToShortString()).ToList();
             }
