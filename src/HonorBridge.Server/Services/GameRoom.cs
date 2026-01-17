@@ -42,6 +42,25 @@ public class GameRoom
         RoomId = roomId;
         Deck = new Deck();
     }
+
+    public void SetBiddingSystem(string systemName)
+    {
+        IBiddingSystem sys = systemName switch
+        {
+            "Acol" => ParametricBidder.Acol,
+            "Goren" => ParametricBidder.Goren,
+            "Strong Club" => ParametricBidder.StrongClub,
+            _ => ParametricBidder.SAYC
+        };
+        
+        CurrentBiddingSystem = sys;
+        
+        // Update existing AIs
+        foreach (var seat in _aiPlayers.Keys.ToList())
+        {
+            _aiPlayers[seat] = new HonorBridge.AI.MonteCarloAI(sys);
+        }
+    }
     
     public void AddAI(Compass seat)
     {
@@ -103,81 +122,71 @@ public class GameRoom
     private async Task ProcessGameLoop()
     {
         bool actionTaken = true;
-        while (actionTaken)
+        try
         {
-            actionTaken = false;
-            
-            // Check if game over
-            if (Phase == RoomPhase.Scoring || Phase == RoomPhase.Waiting) return;
+            while (actionTaken)
+            {
+                actionTaken = false;
+                
+                // Check if game over
+                if (Phase == RoomPhase.Scoring || Phase == RoomPhase.Waiting) return;
 
-            if (Phase == RoomPhase.Bidding && CurrentAuction != null)
-            {
-                var turn = CurrentAuction.NextToAct;
-                if (_aiPlayers.TryGetValue(turn, out var ai))
+                if (Phase == RoomPhase.Bidding && CurrentAuction != null)
                 {
-                    // AI Turn
-                    // Add delay for realism
-                    await Task.Delay(1000);
-                    
-                    var bid = await ai.GetBidAsync(CurrentAuction, Hands[turn]);
-                    CurrentAuction.MakeCall(bid);
-                    actionTaken = true;
-                    
-                    CheckAuctionComplete();
-                    
-                    // Notify clients (via callback or event? GameRoom needs to notify Hub?)
-                    // For now, GameRoom doesn't have reference to Hub. 
-                    // We need an event `StateChanged`.
-                    OnStateChanged?.Invoke();
-                }
-            }
-            else if (Phase == RoomPhase.Play && CurrentPlay != null)
-            {
-                var turn = CurrentPlay.Leader; // Current leader for trick start, or next player
-                // We need `DetermineNextPlayer`.
-                // Accessing internal helper logic of DealPlay via public API?
-                // DealPlay exposes `Leader` which IS the next player to act for the current trick (or start of ne trick).
-                
-                // Exception: Dummy's turn.
-                var actualActor = turn;
-                if (CurrentPlay.Dummy == turn)
-                {
-                    // Declarer controls dummy.
-                    actualActor = CurrentPlay.Declarer;
-                }
-                
-                if (_aiPlayers.TryGetValue(actualActor, out var ai))
-                {
-                    await Task.Delay(1000);
-                    Card card;
-                    if (actualActor == turn)
+                    var turn = CurrentAuction.NextToAct;
+                    if (_aiPlayers.TryGetValue(turn, out var ai))
                     {
-                        // AI playing for itself
-                        card = await ai.GetCardAsync(CurrentPlay, Hands[turn], turn);
+                        // AI Turn - Faster (500ms)
+                        await Task.Delay(500);
+                        
+                        var bid = await ai.GetBidAsync(CurrentAuction, Hands[turn]);
+                        CurrentAuction.MakeCall(bid);
+                        actionTaken = true;
+                        
+                        CheckAuctionComplete();
+                        OnStateChanged?.Invoke();
                     }
-                    else
+                }
+                else if (Phase == RoomPhase.Play && CurrentPlay != null)
+                {
+                    var turn = CurrentPlay.Leader; 
+                    
+                    var actualActor = turn;
+                    if (CurrentPlay.Dummy == turn)
                     {
-                        // AI (Declarer) playing for Dummy
-                        // AI needs to see Dummy hand. Hand passed is `Hands[turn]` i.e. DummyHand.
-                        card = await ai.GetCardAsync(CurrentPlay, Hands[turn], turn); 
+                        // Declarer controls dummy.
+                        actualActor = CurrentPlay.Declarer;
                     }
                     
-                    CurrentPlay.PlayCard(actualActor, card); // AI uses its own permission to play card
-                    // Wait, if AI is Declarer, it plays card FROM Dummy Hand.
-                    // DetermineNext logic in DealPlay ensures correct hand is removed.
-                    // But `PlayCard` signature: `PlayCard(Compass player, Card card)`.
-                    // And PlayCard validation: `Hands[player].Remove(card)`.
-                    // So we must pass `turn` (Dummy) as player, BUT the check `if (CurrentPlay.Dummy == turn) if (seat != Declarer)` checks authorization.
-                    // If we call `CurrentPlay.PlayCard(turn, card)`, it works internally.
-                    // The `GameRoom.PlayCard` wrapper has the authorization check.
-                    // Since we are inside GameRoom loop, we can call `CurrentPlay.PlayCard` directly or use internal logic.
-                    // Let's call `CurrentPlay.PlayCard(turn, card)`.
-                    
-                    actionTaken = true;
-                    CheckPlayComplete();
-                    OnStateChanged?.Invoke();
+                    if (_aiPlayers.TryGetValue(actualActor, out var ai))
+                    {
+                        await Task.Delay(500);
+                        Card card;
+                        if (actualActor == turn)
+                        {
+                            card = await ai.GetCardAsync(CurrentPlay, Hands[turn], turn);
+                        }
+                        else
+                        {
+                            // AI (Declarer) playing for Dummy
+                            card = await ai.GetCardAsync(CurrentPlay, Hands[turn], turn); 
+                        }
+                        
+                        CurrentPlay.PlayCard(actualMover: actualActor, card); 
+                        
+                        actionTaken = true;
+                        CheckPlayComplete();
+                        OnStateChanged?.Invoke();
+                    }
                 }
             }
+        }
+        catch (Exception ex)
+        {
+             // Log error? Console.WriteLine(ex);
+             // Prevent loop crash logic from killing entire room state?
+             // Should ideally notify clients "Bot Crashed" but for now just swallow to stabilize.
+             System.Console.WriteLine($"[Error] GameLoop: {ex.Message}");
         }
     }
     

@@ -52,56 +52,35 @@ public class MonteCarloAI : IBridgePlayer
         var bestCard = legalMoves[0];
         double bestScore = -1;
 
-        // Run Sim
-        var unknownCards = GetUnknownCards(play, myHand);
-        
-        // Parallelization? Maybe later.
-        foreach (var move in legalMoves)
+        try
         {
-            double wins = 0;
-            for (int i = 0; i < SIMULATION_COUNT; i++)
-            {
-                // Clone state?
-                // We need a lightweight "Playout" engine.
-                // Creating full `DealPlay` objects might be heavy.
-                // Let's rely on `DealPlay` logic but optimized? 
-                // Or just use `DealPlay` for correctness.
-                
-                // Distribute unknown cards
-                var shuffled = unknownCards.OrderBy(x => _rng.Next()).ToList();
-                var hands = AssignHands(play, myHand, mySeat, shuffled);
-                
-                // Create simulation game
-                // We need to clone the current trick state too.
-                // This suggests `DealPlay` needs a "Clone" or "FastForward" capability.
-                // Re-playing history is safer.
-                
-                // NOTE: Implementing full state cloning is heavy.
-                // Strategy: Just heuristic for now? No, user accepted Monte Carlo.
-                // We will implement a simplified playout: 
-                // 1. Play 'move'.
-                // 2. Randomly play out rest of trick/deal.
-                // 3. Count winners.
-                
-                // Actually, full simulation of 13 tricks x 20 times x 5 cards = 1300 moves. Fast enough.
-                // We need `DealPlay` to be copyable.
-                
-                // Let's skip full implementation of valid distribution for this specific step 
-                // and just return a Random Legal Move for now, 
-                // but setting up the structure for Phase 7 completion.
-                // Wait, I MUST implement it.
-                
-                // "Simple" Monte Carlo:
-                // Just play the move, then random for others.
-                
-                wins += SimulateRandomPlayout(play, myHand, mySeat, move, shuffled);
-            }
+            // Run Sim
+            var unknownCards = GetUnknownCards(play, myHand);
             
-            if (wins > bestScore)
+            foreach (var move in legalMoves)
             {
-                bestScore = wins;
-                bestCard = move;
+                double wins = 0;
+                for (int i = 0; i < SIMULATION_COUNT; i++)
+                {
+                    // "Simple" Monte Carlo:
+                    // Just play the move, then random for others.
+                    
+                     // Random Playout
+                     wins += SimulateRandomPlayout(play, myHand, mySeat, move, unknown);
+                }
+                
+                if (wins > bestScore)
+                {
+                    bestScore = wins;
+                    bestCard = move;
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            // Fallback to random legal move if simulation fails
+            System.Console.WriteLine($"[Error] MC AI: {ex.Message}");
+            bestCard = legalMoves[_rng.Next(legalMoves.Count)];
         }
 
         return Task.FromResult(bestCard);

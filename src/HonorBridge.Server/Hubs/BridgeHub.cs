@@ -64,6 +64,15 @@ public class BridgeHub : Hub
         }
     }
     
+    public async Task SetBiddingSystem(string systemName)
+    {
+        var (room, _) = GetRoomAndPlayer();
+        if (room == null) return;
+        
+        room.SetBiddingSystem(systemName);
+        // Maybe notify?
+    }
+    
     public async Task Sit(Compass seat)
     {
         var (room, playerName) = GetRoomAndPlayer();

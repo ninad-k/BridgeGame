@@ -18,6 +18,18 @@ public partial class LobbyViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isBusy;
+    
+    // Bidding Systems
+    public System.Collections.ObjectModel.ObservableCollection<string> BiddingSystems { get; } = new() 
+    { 
+        "Strong Club", 
+        "SAYC", 
+        "Acol", 
+        "Goren" 
+    };
+
+    [ObservableProperty]
+    private string _selectedBiddingSystem = "Strong Club";
 
     public LobbyViewModel(SignalRClientService signalR)
     {
@@ -69,11 +81,14 @@ public partial class LobbyViewModel : ObservableObject
             
             // 2. Join Room
             await _signalR.JoinRoom(spRoomId, PlayerName);
+
+            // 3. Set System
+            await _signalR.SetBiddingSystem(SelectedBiddingSystem);
             
-            // 3. Sit user at South (standard for single player)
+            // 4. Sit user at South (standard for single player)
             await _signalR.Sit("South");
             
-            // 4. Add Bots
+            // 5. Add Bots
             await _signalR.AddBot("West");
             await _signalR.AddBot("North");
             await _signalR.AddBot("East");

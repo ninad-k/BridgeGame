@@ -26,6 +26,10 @@
                         Content="About" Padding="10,5"/>
             </StackPanel>
 
+            <TextBlock Text="Bidding System:" Margin="0,15,0,0" HorizontalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding BiddingSystems}" SelectedItem="{Binding SelectedBiddingSystem}" 
+                      Width="150" Margin="0,5,0,0" HorizontalAlignment="Center"/>
+
             <Button Command="{Binding PlaySinglePlayerCommand}" 
                     Content="Play vs Computer" Margin="0,20,0,0" Padding="10,5" FontWeight="Bold" Background="#DDFFDD"/>
             

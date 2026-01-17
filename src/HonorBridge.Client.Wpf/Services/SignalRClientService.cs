@@ -120,4 +120,10 @@ public class SignalRClientService
         // Hub signature: public async Task AddBot(string compass)
         await _connection.InvokeAsync("AddBot", compass);
     }
+
+    public async Task SetBiddingSystem(string systemName)
+    {
+        if (_connection == null) return;
+        await _connection.InvokeAsync("SetBiddingSystem", systemName);
+    }
 }
