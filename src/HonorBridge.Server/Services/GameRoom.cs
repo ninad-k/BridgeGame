@@ -79,6 +79,13 @@ public class GameRoom
         OnStateChanged?.Invoke();
     }
 
+    public void RestartGame()
+    {
+        RotateDealer();
+        StartNewDeal();
+        OnStateChanged?.Invoke();
+    }
+
     public void SetBiddingSystem(string systemName)
     {
         IBiddingSystem sys = systemName switch
@@ -109,7 +116,7 @@ public class GameRoom
                     _ => 500
                 };
             }
-            _aiPlayers[seat] = new HonorBridge.AI.MonteCarloAI(sys, currentSims);
+            _aiPlayers[seat] = new MonteCarloAI(sys, currentSims);
         }
     }
     
@@ -126,7 +133,7 @@ public class GameRoom
             AILevel.Pro => 500,
             _ => 500
         };
-        _aiPlayers[seat] = new HonorBridge.AI.MonteCarloAI(CurrentBiddingSystem, sims);
+        _aiPlayers[seat] = new MonteCarloAI(CurrentBiddingSystem, sims);
         CheckStart();
     }
 
