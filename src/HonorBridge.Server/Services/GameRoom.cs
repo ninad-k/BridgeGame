@@ -304,6 +304,14 @@ public class GameRoom
         finally
         {
             _isGameLoopRunning = false;
+            
+            // Self-Healing: If we exited (e.g. because Phase was Scoring), but Phase is now Bidding/Play 
+            // (e.g. RestartGame called during exit), we MUST restart the loop.
+            if (Phase == RoomPhase.Bidding || Phase == RoomPhase.Play)
+            {
+                // Spawn new loop task ensuring no stack recursion issues
+                Task.Run(ProcessGameLoop);
+            }
         }
     }
     
