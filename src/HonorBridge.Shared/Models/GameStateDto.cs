@@ -32,4 +32,7 @@ public class GameStateDto
     // Last Score
     public string? LastScore { get; set; }
     public int LastPoints { get; set; }
+    
+    // Last Trick Info (for delay phase)
+    public string? LastTrickWinner { get; set; }
 }

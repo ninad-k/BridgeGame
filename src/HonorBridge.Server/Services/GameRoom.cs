@@ -27,8 +27,10 @@ public class GameRoom
     public Compass Dealer { get; private set; } = Compass.North;
     public Vulnerability Vulnerability { get; private set; } = Vulnerability.None;
     
-    public enum RoomPhase { Waiting, Bidding, Play, Scoring }
-    public RoomPhase Phase { get; private set; } = RoomPhase.Waiting;
+    public enum RoomPhase { Waiting, Bidding, Play, Scoring, Lobby }
+    private RoomPhase _phase = RoomPhase.Lobby;
+    private bool _showingTrickResult = false;
+    public RoomPhase Phase { get { return _phase; } private set { _phase = value; } } // Assuming Phase property should now use _phase
     
     public ScoreResult? LastResult { get; private set; }
     
@@ -220,9 +222,22 @@ public class GameRoom
                             card = await ai.GetCardAsync(CurrentPlay, Hands[turn], turn); 
                         }
                         
-                        CurrentPlay.PlayCard(player: turn, card); // NOTE: PlayCard expects "player" who owns the card (turn), not the mover
-                        
+                        // Execute Play
+                        int beforeTricks = CurrentPlay.CompletedTricks.Count;
+                        CurrentPlay.PlayCard(player: turn, card); 
+                        int afterTricks = CurrentPlay.CompletedTricks.Count;
+
                         actionTaken = true;
+                        
+                        if (afterTricks > beforeTricks)
+                        {
+                            // Trick complete. Show result for 3.5s
+                            _showingTrickResult = true;
+                            OnStateChanged?.Invoke();
+                            await Task.Delay(3500);
+                            _showingTrickResult = false;
+                        }
+
                         CheckPlayComplete();
                         OnStateChanged?.Invoke();
                     }
@@ -310,7 +325,19 @@ public class GameRoom
         }
         
         // Execute
+        int beforeTricks = CurrentPlay.CompletedTricks.Count;
         CurrentPlay.PlayCard(player: turn, card);
+        int afterTricks = CurrentPlay.CompletedTricks.Count;
+
+        if (afterTricks > beforeTricks)
+        {
+            // Trick complete. Show result for 3.5s
+            _showingTrickResult = true;
+            OnStateChanged?.Invoke();
+            await Task.Delay(3500);
+            _showingTrickResult = false;
+        }
+
         CheckPlayComplete();
         OnStateChanged?.Invoke();
         
@@ -377,7 +404,21 @@ public class GameRoom
 
         if (CurrentPlay != null)
         {
-            dto.CurrentTrick = CurrentPlay.CurrentTrick.Cards.ToDictionary(k => k.Key.ToString(), k => k.Value.ToShortString());
+            if (_showingTrickResult && CurrentPlay.CompletedTricks.Count > 0)
+            {
+                // Show the JUST Completed trick
+                var lastTrick = CurrentPlay.CompletedTricks.Last();
+                dto.CurrentTrick = lastTrick.Cards.ToDictionary(k => k.Key.ToString(), v => v.Value.ToShortString());
+                dto.LastTrickWinner = lastTrick.DetermineWinner().ToString();
+            }
+            else if (CurrentPlay.CurrentTrick != null)
+            {
+                // Show active trick
+                dto.CurrentTrick = CurrentPlay.CurrentTrick.Cards.ToDictionary(k => k.Key.ToString(), v => v.Value.ToShortString());
+                dto.LastTrickWinner = null;
+            }
+            
+            dto.Declarer = CurrentPlay.Declarer.ToString();
             dto.TricksNS = CurrentPlay.TricksWonNS;
             dto.TricksEW = CurrentPlay.TricksWonEW;
             
