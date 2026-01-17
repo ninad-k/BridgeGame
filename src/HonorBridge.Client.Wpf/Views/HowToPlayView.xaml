@@ -1,8 +1,8 @@
 <UserControl x:Class="HonorBridge.Client.Wpf.Views.HowToPlayView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Grid Background="#F0F0F0" Padding="30">
-        <ScrollViewer>
+    <Grid Background="#F0F0F0">
+        <ScrollViewer Margin="30">
             <StackPanel MaxWidth="800">
                 <TextBlock Text="{Binding Title}" FontSize="32" FontWeight="Bold" Margin="0,0,0,20" Foreground="#004400"/>
 
