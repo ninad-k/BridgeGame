@@ -38,7 +38,6 @@ public partial class MainViewModel : ObservableObject
                  CurrentView = vm;
              });
         }
-        }
         else if (CurrentView is GameTableViewModel vm)
         {
             // Update Table
