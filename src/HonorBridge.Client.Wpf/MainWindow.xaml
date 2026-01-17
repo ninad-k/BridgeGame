@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HonorBridge.Client.Wpf"
         mc:Ignorable="d"
-        Title="Honor Bridge" Height="720" Width="1024">
+        Title="Honor Bridge - Tournament Edition" Height="650" Width="1000"
+        Icon="/Assets/icon.png"
+        WindowStartupLocation="CenterScreen">
     <Grid>
         <ContentControl Content="{Binding CurrentView}" />
     </Grid>
