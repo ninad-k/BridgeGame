@@ -74,7 +74,7 @@ public class SignalRClientService
                 StateUpdated?.Invoke(state);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // ErrorReceived?.Invoke("Failed to sync state: " + ex.Message);
         }

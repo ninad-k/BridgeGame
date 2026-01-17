@@ -17,7 +17,7 @@ public partial class GameTableView : UserControl
         
         this.LayoutUpdated += (s, e) => 
         {
-             if (Fireworks != null && Fireworks.Visibility == Visibility.Visible)
+             if (Fireworks != null && Fireworks.Visibility == System.Windows.Visibility.Visible)
              {
                  Fireworks.Start();
              }
