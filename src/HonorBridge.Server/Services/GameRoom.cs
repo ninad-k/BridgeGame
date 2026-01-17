@@ -172,7 +172,7 @@ public class GameRoom
                             card = await ai.GetCardAsync(CurrentPlay, Hands[turn], turn); 
                         }
                         
-                        CurrentPlay.PlayCard(actualMover: actualActor, card); 
+                        CurrentPlay.PlayCard(player: actualActor, card); 
                         
                         actionTaken = true;
                         CheckPlayComplete();
