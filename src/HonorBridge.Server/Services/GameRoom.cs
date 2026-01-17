@@ -79,13 +79,6 @@ public class GameRoom
         OnStateChanged?.Invoke();
     }
 
-    public void RestartGame()
-    {
-        RotateDealer();
-        StartNewDeal();
-        OnStateChanged?.Invoke();
-    }
-
     public void SetBiddingSystem(string systemName)
     {
         IBiddingSystem sys = systemName switch
