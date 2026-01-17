@@ -9,7 +9,7 @@ namespace HonorBridge.AI;
 public class MonteCarloAI : IBridgePlayer
 {
     private readonly Random _rng = new();
-    private const int SIMULATION_COUNT = 20; // Low for performance in MVP
+    private const int SIMULATION_COUNT = 200; // Increased for better skill
     private readonly IBiddingSystem _biddingSystem;
 
     public MonteCarloAI(IBiddingSystem? system = null)

@@ -31,4 +31,5 @@ public class GameStateDto
     
     // Last Score
     public string? LastScore { get; set; }
+    public int LastPoints { get; set; }
 }

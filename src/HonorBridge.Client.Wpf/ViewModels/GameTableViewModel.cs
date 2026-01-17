@@ -32,6 +32,9 @@ public partial class GameTableViewModel : ObservableObject
     [ObservableProperty] private string _lastCallSouth = "";
     [ObservableProperty] private string _lastCallEast = "";
     [ObservableProperty] private string _lastCallWest = "";
+    
+    [ObservableProperty] private bool _isWinner;
+    [ObservableProperty] private string _winnerName = "";
 
     public ObservableCollection<string> AuctionHistory { get; } = new();
 
@@ -129,7 +132,39 @@ public partial class GameTableViewModel : ObservableObject
         
         if (State.CallHistory == null || State.CallHistory.Count == 0) return;
         
-        // 2. Parse dealer to find who started
+        // UPDATE WINNER STATUS
+        // Logic:
+        // 1. Find who was declarer (State.Declarer string)
+        // 2. Determine if I am partner of declarer
+        // 3. Check State.LastPoints (Absolute for Declarer)
+        
+        IsWinner = false;
+        WinnerName = "";
+        
+        if (!string.IsNullOrEmpty(State.LastScore) && !string.IsNullOrEmpty(State.Declarer))
+        {
+             if (System.Enum.TryParse<HonorBridge.Engine.Compass>(State.Declarer, out var declCompass))
+             {
+                 bool amIMeOrPartner = (declCompass == HonorBridge.Engine.Compass.South || declCompass == HonorBridge.Engine.Compass.North);
+                 int points = State.LastPoints;
+                 
+                 // If I am on their team: Win if Points > 0
+                 // If I am Opponent: Win if Points < 0 (They went down)
+                 
+                 if (amIMeOrPartner && points > 0) 
+                 {
+                     IsWinner = true;
+                     WinnerName = "Sanjay"; // Or current player name, hardcoded mainly for demand
+                 }
+                 else if (!amIMeOrPartner && points < 0)
+                 {
+                     IsWinner = true;
+                     WinnerName = "Sanjay";
+                 }
+             }
+        }
+        
+        // 2. Parse dealer...
         if (!System.Enum.TryParse<HonorBridge.Engine.Compass>(State.Dealer, out var currentBidder))
         {
             currentBidder = HonorBridge.Engine.Compass.North; // Fallback

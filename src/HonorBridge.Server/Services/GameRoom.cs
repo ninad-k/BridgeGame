@@ -121,43 +121,89 @@ public class GameRoom
         LastResult = null;
     }
     
+    private bool IsHuman(Compass c)
+    {
+        return _seats[c] != null && !_seats[c]!.StartsWith("Bot-");
+    }
+
+    private Compass GetEffectiveDeclarer()
+    {
+        if (CurrentPlay == null) return Compass.North; // Fallback
+        
+        Compass decl = CurrentPlay.Declarer;
+        if (IsHuman(decl)) return decl;
+        
+        // If Declarer is Bot, check Partner
+        Compass partner = (Compass)(((int)decl + 2) % 4);
+        if (IsHuman(partner)) return partner;
+        
+        return decl;
+    }
+
     private async Task ProcessGameLoop()
     {
-        bool actionTaken = true;
-        try
+        try 
         {
-            while (actionTaken)
+            bool actionTaken = true;
+            while(actionTaken)
             {
                 actionTaken = false;
                 
-                // Check if game over
-                if (Phase == RoomPhase.Scoring || Phase == RoomPhase.Waiting) return;
-
-                if (Phase == RoomPhase.Bidding && CurrentAuction != null)
+                if (Phase == RoomPhase.Bidding && CurrentAuction != null && !CurrentAuction.IsComplete)
                 {
-                    var turn = CurrentAuction.NextToAct;
+                    // ... Bidding logic ...
+                    Compass turn = CurrentAuction.NextToAct;
                     if (_aiPlayers.TryGetValue(turn, out var ai))
                     {
-                        // AI Turn - Faster (500ms)
-                        await Task.Delay(500);
-                        
-                        var bid = await ai.GetBidAsync(CurrentAuction, Hands[turn]);
-                        CurrentAuction.MakeCall(bid);
-                        actionTaken = true;
-                        
-                        CheckAuctionComplete();
-                        OnStateChanged?.Invoke();
+                         await Task.Delay(500); // Thinking delay
+                         var bid = await ai.GetBidAsync(CurrentAuction, Hands[turn]);
+                         await MakeBidAsync(turn, bid);
+                         actionTaken = true;
                     }
                 }
-                else if (Phase == RoomPhase.Play && CurrentPlay != null)
+                else if (Phase == RoomPhase.Play && CurrentPlay != null && !CurrentPlay.IsGameComplete)
                 {
-                    var turn = CurrentPlay.Leader; 
+                    Compass turn = CurrentPlay.NextToAct;
                     
-                    var actualActor = turn;
-                    if (CurrentPlay.Dummy == turn)
+                    // CHECK: Is this turn controlled by a Human?
+                    Compass effectiveDeclarer = GetEffectiveDeclarer();
+                    
+                    bool isHumanTurn = false;
+                    
+                    if (turn == CurrentPlay.Dummy)
                     {
-                        // Declarer controls dummy.
-                        actualActor = CurrentPlay.Declarer;
+                        // Dummy's turn is played by Effective Declarer
+                        isHumanTurn = IsHuman(effectiveDeclarer);
+                    }
+                    else if (turn == effectiveDeclarer)
+                    {
+                        // Effective Declarer playing their own hand (or the hand they took over)
+                        isHumanTurn = IsHuman(effectiveDeclarer);
+                    }
+                    else
+                    {
+                        // Defender or normal play
+                        isHumanTurn = IsHuman(turn);
+                    }
+
+                    if (isHumanTurn)
+                    {
+                        // Wait for human input.
+                        continue; 
+                    }
+
+                    // Otherwise, AI plays
+                    // ...
+                    Compass actualActor = turn; // The AI that strictly owns the hand
+                    
+                    // If turn is Dummy, Declarer AI plays. 
+                    // But if EffectiveDeclarer is Bot, it plays.
+                    // If we are here, isHumanTurn is false.
+                    // So EffectiveDeclarer is Bot.
+                    
+                    if (turn == CurrentPlay.Dummy)
+                    {
+                         actualActor = CurrentPlay.Declarer; // AI Declarer plays for Dummy
                     }
                     
                     if (_aiPlayers.TryGetValue(actualActor, out var ai))
@@ -174,7 +220,7 @@ public class GameRoom
                             card = await ai.GetCardAsync(CurrentPlay, Hands[turn], turn); 
                         }
                         
-                        CurrentPlay.PlayCard(player: actualActor, card); 
+                        CurrentPlay.PlayCard(player: turn, card); // NOTE: PlayCard expects "player" who owns the card (turn), not the mover
                         
                         actionTaken = true;
                         CheckPlayComplete();
@@ -185,10 +231,7 @@ public class GameRoom
         }
         catch (Exception ex)
         {
-             // Log error? Console.WriteLine(ex);
-             // Prevent loop crash logic from killing entire room state?
-             // Should ideally notify clients "Bot Crashed" but for now just swallow to stabilize.
-             System.Console.WriteLine($"[Error] GameLoop: {ex.Message}");
+            Console.WriteLine($"Error in Game Loop: {ex.Message}");
         }
     }
     
@@ -244,20 +287,30 @@ public class GameRoom
         if (Phase != RoomPhase.Play) throw new InvalidOperationException("Not in play phase.");
         if (CurrentPlay == null) throw new InvalidOperationException("No play active.");
         
-        Compass turn = CurrentPlay.Leader;
-        Compass actualMover = seat;
+        Compass turn = CurrentPlay.NextToAct;
+        
+        // Determine who is allowed to move
+        Compass effectiveDeclarer = GetEffectiveDeclarer();
         
         if (CurrentPlay.Dummy == turn)
         {
-            if (seat != CurrentPlay.Declarer) throw new InvalidOperationException("Only Declarer can play for Dummy.");
-            actualMover = CurrentPlay.Dummy;
+            // Dummy's turn. 
+            // Only EffectiveDeclarer can play.
+            if (seat != effectiveDeclarer) throw new InvalidOperationException("Only Declarer (or Effective Declarer) can play for Dummy.");
+        }
+        else if (turn == effectiveDeclarer || (turn == CurrentPlay.Declarer && seat == effectiveDeclarer))
+        {
+             // Declarer's turn (or effectively Declarer's turn if they took over).
+             if (seat != effectiveDeclarer) throw new InvalidOperationException("Not your turn.");
         }
         else
         {
+             // Standard Defender turn
              if (seat != turn) throw new InvalidOperationException("Not your turn.");
         }
         
-        CurrentPlay.PlayCard(actualMover, card);
+        // Execute
+        CurrentPlay.PlayCard(player: turn, card);
         CheckPlayComplete();
         OnStateChanged?.Invoke();
         
@@ -287,7 +340,19 @@ public class GameRoom
 
         if (Hands.Count > 0 && mySeat.HasValue && Hands.ContainsKey(mySeat.Value))
         {
-            dto.MyHand = Hands[mySeat.Value].Cards.Select(c => c.ToShortString()).ToList();
+            Compass handSource = mySeat.Value;
+            if (CurrentPlay != null)
+            {
+                var eff = GetEffectiveDeclarer();
+                if (eff == mySeat.Value && CurrentPlay.Declarer != mySeat.Value)
+                {
+                    // If I am Effective Declarer (taking over for Bot Declarer), 
+                    // I need to see the Bot's hand in "My Hand" area to play it.
+                    handSource = CurrentPlay.Declarer;
+                }
+            }
+            
+            dto.MyHand = Hands[handSource].Cards.Select(c => c.ToShortString()).ToList();
         }
         
         // Hand Counts
@@ -326,6 +391,7 @@ public class GameRoom
         if (LastResult != null)
         {
             dto.LastScore = LastResult.ToString();
+            dto.LastPoints = LastResult.Points;
         }
 
         return dto;

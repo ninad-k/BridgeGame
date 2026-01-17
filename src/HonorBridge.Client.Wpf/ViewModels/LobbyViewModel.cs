@@ -11,10 +11,10 @@ public partial class LobbyViewModel : ObservableObject
     private readonly SignalRClientService _signalR;
 
     [ObservableProperty]
-    private string _playerName = "Player1";
+    private string _playerName = "Sanjay";
 
     [ObservableProperty]
-    private string _roomId = "Room1";
+    private string _roomId = "Tournament";
 
     [ObservableProperty]
     private bool _isBusy;
