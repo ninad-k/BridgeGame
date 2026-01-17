@@ -77,6 +77,7 @@ public class GameRoom
         RotateDealer();
         StartNewDeal();
         OnStateChanged?.Invoke();
+        _ = ProcessGameLoop();
     }
 
     public void SetBiddingSystem(string systemName)
