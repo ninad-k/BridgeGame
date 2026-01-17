@@ -4,7 +4,33 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="720" d:DesignWidth="1024">
+             <UserControl.Resources>
+        <!-- Card Template -->
+        <DataTemplate x:Key="CardTemplate">
+            <Border Width="60" Height="90" Background="White" CornerRadius="5" BorderBrush="#333" BorderThickness="1" Margin="2">
+                <Grid>
+                    <!-- Top Left Rank/Suit -->
+                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2">
+                        <TextBlock Text="{Binding Rank}" FontWeight="Bold" FontSize="14" Foreground="{Binding Color}"/>
+                        <TextBlock Text="{Binding SuitSymbol}" FontSize="12" Foreground="{Binding Color}"/>
+                    </StackPanel>
+                    
+                    <!-- Center Suit -->
+                    <TextBlock Text="{Binding SuitSymbol}" FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{Binding Color}"/>
+                    
+                    <!-- Bottom Right Rank/Suit (Rotated) -->
+                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2" RenderTransformOrigin="0.5,0.5">
+                        <StackPanel.RenderTransform>
+                            <RotateTransform Angle="180"/>
+                        </StackPanel.RenderTransform>
+                        <TextBlock Text="{Binding Rank}" FontWeight="Bold" FontSize="14" Foreground="{Binding Color}"/>
+                        <TextBlock Text="{Binding SuitSymbol}" FontSize="12" Foreground="{Binding Color}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
     <Grid Background="#0A420A"> <!-- Green Felt -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> <!-- Top Bar / North -->
@@ -33,19 +59,12 @@
                 <Button Command="{Binding SitCommand}" CommandParameter="North" Content="Sit North" Visibility="{Binding State.Seats[North], Converter={StaticResource NullToVis}}" />
                 <TextBlock Text="{Binding State.Seats[North]}" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold"/>
                 <!-- Dummy Hand (if visible) -->
-                <ItemsControl ItemsSource="{Binding DummyHand}">
+                <ItemsControl ItemsSource="{Binding DummyHand}" ItemTemplate="{StaticResource CardTemplate}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Background="White" CornerRadius="3" Margin="2" Width="40" Height="60">
-                                <TextBlock Text="{Binding}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </StackPanel>
         </Border>
@@ -78,9 +97,33 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button Command="{Binding DataContext.PlayCardCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
-                                    CommandParameter="{Binding}"
-                                    Width="50" Height="80" Margin="-10,0,0,0" Background="White">
-                                <TextBlock Text="{Binding}" FontWeight="Bold" FontSize="16"/>
+                                    CommandParameter="{Binding Id}"
+                                    Margin="-30,0,0,0" Padding="0" BorderThickness="0" Background="Transparent"
+                                    RenderTransformOrigin="0.5,0.5">
+                                <Button.RenderTransform>
+                                    <TranslateTransform X="0" Y="0"/>
+                                </Button.RenderTransform>
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <ContentPresenter/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="RenderTransform">
+                                                    <Setter.Value>
+                                                       <TranslateTransform Y="-20"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <ContentControl Content="{Binding}" ContentTemplate="{StaticResource CardTemplate}"/>
                             </Button>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -96,18 +139,21 @@
             <TextBlock Text="E" Foreground="#88FFFFFF" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0"/>
             
             <!-- Cards played -->
-            <Border Width="60" Height="90" Background="White" VerticalAlignment="Top" Margin="0,40,0,0" Visibility="{Binding State.CurrentTrick[North], Converter={StaticResource NullToVis}}">
-                <TextBlock Text="{Binding State.CurrentTrick[North]}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Border>
-             <Border Width="60" Height="90" Background="White" VerticalAlignment="Bottom" Margin="0,0,0,40" Visibility="{Binding State.CurrentTrick[South], Converter={StaticResource NullToVis}}">
-                <TextBlock Text="{Binding State.CurrentTrick[South]}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Border>
-             <Border Width="60" Height="90" Background="White" HorizontalAlignment="Left" Margin="40,0,0,0" Visibility="{Binding State.CurrentTrick[West], Converter={StaticResource NullToVis}}">
-                <TextBlock Text="{Binding State.CurrentTrick[West]}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Border>
-             <Border Width="60" Height="90" Background="White" HorizontalAlignment="Right" Margin="0,0,40,0" Visibility="{Binding State.CurrentTrick[East], Converter={StaticResource NullToVis}}">
-                <TextBlock Text="{Binding State.CurrentTrick[East]}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Border>
+            <ContentControl Content="{Binding CardNorth}" ContentTemplate="{StaticResource CardTemplate}" 
+                            VerticalAlignment="Top" Margin="0,40,0,0" 
+                            Visibility="{Binding CardNorth, Converter={StaticResource NullToVis}}"/>
+            
+            <ContentControl Content="{Binding CardSouth}" ContentTemplate="{StaticResource CardTemplate}" 
+                            VerticalAlignment="Bottom" Margin="0,0,0,40" 
+                            Visibility="{Binding CardSouth, Converter={StaticResource NullToVis}}"/>
+                            
+            <ContentControl Content="{Binding CardWest}" ContentTemplate="{StaticResource CardTemplate}" 
+                            HorizontalAlignment="Left" Margin="40,0,0,0" 
+                            Visibility="{Binding CardWest, Converter={StaticResource NullToVis}}"/>
+                            
+            <ContentControl Content="{Binding CardEast}" ContentTemplate="{StaticResource CardTemplate}" 
+                            HorizontalAlignment="Right" Margin="0,0,40,0" 
+                            Visibility="{Binding CardEast, Converter={StaticResource NullToVis}}"/>
             
             <!-- Bidding Box Overlay (Visible during Bidding phase) -->
             <Border Background="#DD000000" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="20">

@@ -15,8 +15,17 @@ public partial class GameTableViewModel : ObservableObject
     private GameStateDto _state;
     
     // Derived properties for UI binding
-    public ObservableCollection<string> MyHand { get; } = new();
-    public ObservableCollection<string> DummyHand { get; } = new();
+    public ObservableCollection<CardViewModel> MyHand { get; } = new();
+    public ObservableCollection<CardViewModel> DummyHand { get; } = new();
+    
+    // Played Cards for Trick (Dictionary mapping Compass -> CardViewModel)
+    // We can't bind Dictionary directly to UI easily for updates if Keys change, but values change.
+    // ObservableDictionary? Or just properties?
+    // Let's use properties for the 4 compass positions to make XAML binding easy.
+    [ObservableProperty] private CardViewModel? _cardNorth;
+    [ObservableProperty] private CardViewModel? _cardSouth;
+    [ObservableProperty] private CardViewModel? _cardEast;
+    [ObservableProperty] private CardViewModel? _cardWest;
     
     // Bidding
     [ObservableProperty] private string _selectedLevel = "1";
@@ -35,10 +44,21 @@ public partial class GameTableViewModel : ObservableObject
         State = state;
         
         MyHand.Clear();
-        foreach (var c in state.MyHand) MyHand.Add(c);
+        foreach (var c in state.MyHand) MyHand.Add(new CardViewModel(c));
         
         DummyHand.Clear();
-        foreach (var c in state.DummyHand) DummyHand.Add(c);
+        foreach (var c in state.DummyHand) DummyHand.Add(new CardViewModel(c));
+        
+        // Update Trick
+        CardNorth = null;
+        CardSouth = null;
+        CardEast = null;
+        CardWest = null;
+        
+        if (state.CurrentTrick.TryGetValue("North", out var cN)) CardNorth = new CardViewModel(cN);
+        if (state.CurrentTrick.TryGetValue("South", out var cS)) CardSouth = new CardViewModel(cS);
+        if (state.CurrentTrick.TryGetValue("East", out var cE)) CardEast = new CardViewModel(cE);
+        if (state.CurrentTrick.TryGetValue("West", out var cW)) CardWest = new CardViewModel(cW);
     }
 
     [RelayCommand]
