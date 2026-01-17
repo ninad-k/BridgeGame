@@ -27,7 +27,7 @@ public class GameRoom
     public Compass Dealer { get; private set; } = Compass.North;
     public Vulnerability Vulnerability { get; private set; } = Vulnerability.None;
     
-    public enum RoomPhase { Waiting, Bidding, Play, Scoring, Lobby }
+    public enum RoomPhase { Waiting, Bidding, AuctionReview, Play, Scoring, Lobby }
     private RoomPhase _phase = RoomPhase.Waiting;
     private bool _showingTrickResult = false;
     public RoomPhase Phase { get { return _phase; } private set { _phase = value; } } // Assuming Phase property should now use _phase
@@ -319,12 +319,13 @@ public class GameRoom
     
     private void CheckAuctionComplete()
     {
-         if (CurrentAuction != null && CurrentAuction.IsComplete)
+        if (CurrentAuction != null && CurrentAuction.IsComplete)
         {
             if (CurrentAuction.ContractBid != null)
             {
-                Phase = RoomPhase.Play;
-                CurrentPlay = new DealPlay(Hands, CurrentAuction.ContractBid.Value, CurrentAuction.Declarer!.Value);
+                Phase = RoomPhase.AuctionReview;
+                // DO NOT start DealPlay yet. Wait for "StartPlay".
+                // CurrentPlay = new DealPlay(Hands, CurrentAuction.ContractBid.Value, CurrentAuction.Declarer!.Value);
             }
             else
             {
@@ -333,6 +334,16 @@ public class GameRoom
                 // Loop continues in StartNewDeal if Dealer is AI
             }
         }
+    }
+
+    public void StartPlay()
+    {
+        if (Phase != RoomPhase.AuctionReview) return;
+        
+        Phase = RoomPhase.Play;
+        CurrentPlay = new DealPlay(Hands, CurrentAuction!.ContractBid!.Value, CurrentAuction.Declarer!.Value);
+        OnStateChanged?.Invoke();
+        _ = ProcessGameLoop();
     }
     
     private void CheckPlayComplete()

@@ -133,6 +133,12 @@ public class SignalRClientService
         await _connection.InvokeAsync("SetAILevel", level);
     }
     
+    public async Task StartPlay()
+    {
+        if (_connection == null) return;
+        await _connection.InvokeAsync("StartPlay");
+    }
+
     public async Task RestartGame()
     {
         if (_connection == null) return;

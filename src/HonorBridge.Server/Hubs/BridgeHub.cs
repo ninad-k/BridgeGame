@@ -145,6 +145,16 @@ public class BridgeHub : Hub
         }
     }
 
+    public async Task StartPlay()
+    {
+        var (room, _) = GetRoomAndPlayer();
+        if (room == null) return;
+        
+        room.StartPlay();
+        await SendStateToGroup(room);
+    }
+
+
     public async Task PlayCard(string cardShortString)
     {
         var (room, playerName) = GetRoomAndPlayer();

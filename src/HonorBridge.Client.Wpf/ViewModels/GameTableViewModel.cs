@@ -40,9 +40,15 @@ public partial class GameTableViewModel : ObservableObject
     
     [ObservableProperty] private bool _isWinner;
     [ObservableProperty] private string _winnerName = "";
+    [ObservableProperty] private bool _isAuctionReview;
+    
+    // Hand Valuation
+
     
     // Hand Valuation
     [ObservableProperty] private int _myHCP;
+    [ObservableProperty] private int _myTotalPoints;
+
 
 
     // Active Turn Indicators
@@ -248,7 +254,10 @@ public partial class GameTableViewModel : ObservableObject
         IsTurnEast = (!string.IsNullOrEmpty(State.NextToAct) && State.NextToAct == "East");
         IsTurnWest = (!string.IsNullOrEmpty(State.NextToAct) && State.NextToAct == "West");
         
+        IsAuctionReview = (State.Phase == "AuctionReview");
+        
         System.Diagnostics.Debug.WriteLine($"[DEBUG] State Update: MySeat={State.MySeat}, Next={State.NextToAct}, Phase={State.Phase}, IsMyTurn={(!string.IsNullOrEmpty(state.MySeat) && state.NextToAct == state.MySeat)}");
+
         System.Console.WriteLine($"[DEBUG] State Update: MySeat={State.MySeat}, Next={State.NextToAct}, Phase={State.Phase}, IsMyTurn={(!string.IsNullOrEmpty(state.MySeat) && state.NextToAct == state.MySeat)}");
     }
 
@@ -507,14 +516,35 @@ public partial class GameTableViewModel : ObservableObject
         await _signalR.PlayCard(card);
     }
     
+    [RelayCommand]
+    private async Task StartPlay()
+    {
+        await _signalR.StartPlay();
+    }
+    
     private void UpdateHCP()
     {
         int hcp = 0;
+        var suits = new Dictionary<string, int> { {"C",0}, {"D",0}, {"H",0}, {"S",0} };
+        
         foreach (var card in MyHand)
         {
             hcp += GetCardPoints(card.Rank);
+            
+            // Count distribution (Length points)
+            // CardViewModel.Suit is "C", "D", "H", "S"
+            if (suits.ContainsKey(card.Suit)) suits[card.Suit]++;
         }
         MyHCP = hcp;
+        
+        // Calculate Length Points: 1 pt for each card over 4 in value
+        int lengthPoints = 0;
+        foreach(var count in suits.Values)
+        {
+            if (count > 4) lengthPoints += (count - 4);
+        }
+        
+        MyTotalPoints = MyHCP + lengthPoints;
     }
     
     private int GetCardPoints(string rank)
