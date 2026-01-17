@@ -12,6 +12,7 @@
         <Menu DockPanel.Dock="Top" Background="#F0F0F0" Padding="5">
             <MenuItem Header="_File">
                 <MenuItem Header="_New Game / Play Again" Command="{Binding NewGameCommand}"/>
+                <MenuItem Header="_Leave Game (Go to Lobby)" Command="{Binding LeaveGameCommand}"/>
                 <Separator/>
                 <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
             </MenuItem>

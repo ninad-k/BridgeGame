@@ -59,11 +59,11 @@ public class GameRoom
     {
         int sims = _currentLevel switch
         {
-            AILevel.Beginner => 20,
-            AILevel.Intermediate => 50,
-            AILevel.Advanced => 100,
-            AILevel.Pro => 200,
-            _ => 200
+            AILevel.Beginner => 50,
+            AILevel.Intermediate => 100,
+            AILevel.Advanced => 250,
+            AILevel.Pro => 500,
+            _ => 500
         };
         
         _aiPlayers.Clear();

@@ -300,6 +300,9 @@ public partial class GameTableViewModel : ObservableObject
     
     private async Task Bid(int level, string strain, string type) 
     {
+        // Optimistic Disable: Prevent double clicks and show "Wait" state immediately
+        foreach(var item in BiddingBox) item.IsEnabled = false;
+        
         await _signalR.PlaceBid(level, strain, type);
     }
     

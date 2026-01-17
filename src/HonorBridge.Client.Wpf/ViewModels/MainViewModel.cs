@@ -82,6 +82,18 @@ public partial class MainViewModel : ObservableObject
     }
     
     [RelayCommand]
+    private async Task LeaveGame()
+    {
+         // Logic to leave room? SignalR doesn't strictly have LeaveRoom yet exposed on Hub?
+         // Actually "JoinRoom" overwrites.
+         // Effectively, just switch view to Lobby.
+         // If we want to simulate disconnect, we can.
+         // But UI switching is enough for single player experience.
+         
+         CurrentView = _serviceProvider.GetRequiredService<LobbyViewModel>();
+    }
+
+    [RelayCommand]
     private async Task SetLevel(string levelName)
     {
         if (Enum.TryParse<AILevel>(levelName, out var level))
