@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.AspNetCore.SignalR.Client;
 using HonorBridge.Shared.Models;
 using HonorBridge.Engine; // For Compass enum if needed, though DTOs use strings mostly.
 
@@ -9,7 +8,7 @@ namespace HonorBridge.Client.Wpf.Services;
 
 public class SignalRClientService
 {
-    private HubConnection _connection;
+    private HubConnection _connection = null!;
     
     public event Action<GameStateDto>? StateUpdated;
     public event Action<string>? ErrorReceived;

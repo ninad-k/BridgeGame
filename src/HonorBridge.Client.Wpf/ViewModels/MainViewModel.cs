@@ -29,37 +29,23 @@ public partial class MainViewModel : ObservableObject
     
     private void OnStateUpdated(HonorBridge.Shared.Models.GameStateDto state)
     {
-        // CurrentView = _serviceProvider.GetRequiredService<LobbyViewModel>(); // Original
-        CurrentView = lobbyVm; // New
-        
-        // _signalR.StateUpdated += OnStateUpdated; // Original
-        _signalR.StateUpdated += (state) => 
+        // Auto-navigate to Table if joined a room
+        if (CurrentView is LobbyViewModel && !string.IsNullOrEmpty(state.RoomId))
         {
-            // If we are in Lobby and state shows valid room, switch?
-            // Or just let Lobby button do it.
-            // For now, we manually switch views via commands.
-        };
+            // Switch to GameTable
+             System.Windows.Application.Current.Dispatcher.Invoke(() => 
+             {
+                 var vm = _serviceProvider.GetRequiredService<GameTableViewModel>();
+                 vm.UpdateState(state);
+                 CurrentView = vm;
+             });
+        }
+        else if (CurrentView is GameTableViewModel vm)
+        {
+            // Update Table
+            System.Windows.Application.Current.Dispatcher.Invoke(() => vm.UpdateState(state));
+        }
     }
-    
-    // private void OnStateUpdated(HonorBridge.Shared.Models.GameStateDto state) // Original method removed
-    // {
-    //     // Auto-navigate to Table if joined a room
-    //     if (CurrentView is LobbyViewModel && !string.IsNullOrEmpty(state.RoomId))
-    //     {
-    //         // Switch to GameTable
-    //          App.Current.Dispatcher.Invoke(() => 
-    //          {
-    //              var vm = _serviceProvider.GetRequiredService<GameTableViewModel>();
-    //              vm.UpdateState(state);
-    //              CurrentView = vm;
-    //          });
-    //     }
-    //     else if (CurrentView is GameTableViewModel vm)
-    //     {
-    //         // Update Table
-    //         App.Current.Dispatcher.Invoke(() => vm.UpdateState(state));
-    //     }
-    // }
 
     [RelayCommand]
     private void Exit()
