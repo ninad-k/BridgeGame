@@ -28,7 +28,7 @@ public class GameRoom
     public Vulnerability Vulnerability { get; private set; } = Vulnerability.None;
     
     public enum RoomPhase { Waiting, Bidding, Play, Scoring, Lobby }
-    private RoomPhase _phase = RoomPhase.Lobby;
+    private RoomPhase _phase = RoomPhase.Waiting;
     private bool _showingTrickResult = false;
     public RoomPhase Phase { get { return _phase; } private set { _phase = value; } } // Assuming Phase property should now use _phase
     
@@ -160,7 +160,7 @@ public class GameRoom
 
     public void CheckStart()
     {
-        if (Phase == RoomPhase.Waiting && _seats.Values.All(s => s != null))
+        if ((Phase == RoomPhase.Waiting || Phase == RoomPhase.Lobby) && _seats.Values.All(s => s != null))
         {
             StartNewDeal();
             // If Dealer is AI, trigger loop
