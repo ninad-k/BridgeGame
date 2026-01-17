@@ -59,11 +59,11 @@ public class GameRoom
     {
         int sims = _currentLevel switch
         {
-            AILevel.Beginner => 50,
-            AILevel.Intermediate => 100,
-            AILevel.Advanced => 250,
-            AILevel.Pro => 500,
-            _ => 500
+            AILevel.Beginner => 25,
+            AILevel.Intermediate => 50,
+            AILevel.Advanced => 100,
+            AILevel.Pro => 200,
+            _ => 200
         };
         
         _aiPlayers.Clear();
@@ -102,11 +102,11 @@ public class GameRoom
                 // But we know _currentLevel.
                 currentSims = _currentLevel switch
                 {
-                    AILevel.Beginner => 50,
-                    AILevel.Intermediate => 100,
-                    AILevel.Advanced => 250,
-                    AILevel.Pro => 500,
-                    _ => 500
+                    AILevel.Beginner => 25,
+                    AILevel.Intermediate => 50,
+                    AILevel.Advanced => 100,
+                    AILevel.Pro => 200,
+                    _ => 200
                 };
             }
             _aiPlayers[seat] = new MonteCarloAI(sys, currentSims);
@@ -120,11 +120,11 @@ public class GameRoom
         _seats[seat] = $"Bot-{seat}";
         int sims = _currentLevel switch
         {
-            AILevel.Beginner => 50,
-            AILevel.Intermediate => 100,
-            AILevel.Advanced => 250,
-            AILevel.Pro => 500,
-            _ => 500
+            AILevel.Beginner => 25,
+            AILevel.Intermediate => 50,
+            AILevel.Advanced => 100,
+            AILevel.Pro => 200,
+            _ => 200
         };
         _aiPlayers[seat] = new MonteCarloAI(CurrentBiddingSystem, sims);
         CheckStart();
