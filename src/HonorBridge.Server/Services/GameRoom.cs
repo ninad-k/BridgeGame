@@ -477,6 +477,8 @@ public class GameRoom
 
         if (CurrentPlay != null)
         {
+            dto.NextToAct = CurrentPlay.NextToAct.ToString();
+            
             if (_showingTrickResult && CurrentPlay.CompletedTricks.Count > 0)
             {
                 // Show the JUST Completed trick
