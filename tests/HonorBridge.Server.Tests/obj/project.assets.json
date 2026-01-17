@@ -857,6 +857,7 @@
         "dependencies": {
           "HonorBridge.AI": "1.0.0",
           "HonorBridge.Engine": "1.0.0",
+          "HonorBridge.Shared": "1.0.0",
           "Microsoft.AspNetCore.OpenApi": "9.0.8",
           "Serilog.AspNetCore": "9.0.0"
         },
@@ -869,6 +870,16 @@
         "frameworkReferences": [
           "Microsoft.AspNetCore.App"
         ]
+      },
+      "HonorBridge.Shared/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/HonorBridge.Shared.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/HonorBridge.Shared.dll": {}
+        }
       }
     }
   },
@@ -2057,6 +2068,11 @@
       "type": "project",
       "path": "../../src/HonorBridge.Server/HonorBridge.Server.csproj",
       "msbuildProject": "../../src/HonorBridge.Server/HonorBridge.Server.csproj"
+    },
+    "HonorBridge.Shared/1.0.0": {
+      "type": "project",
+      "path": "../../src/HonorBridge.Shared/HonorBridge.Shared.csproj",
+      "msbuildProject": "../../src/HonorBridge.Shared/HonorBridge.Shared.csproj"
     }
   },
   "projectFileDependencyGroups": {
