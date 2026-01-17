@@ -182,6 +182,16 @@ public partial class GameTableViewModel : ObservableObject
         System.Console.WriteLine($"[DEBUG] State Update: MySeat={State.MySeat}, Next={State.NextToAct}, Phase={State.Phase}, IsMyTurn={(!string.IsNullOrEmpty(state.MySeat) && state.NextToAct == state.MySeat)}");
     }
 
+    public class BiddingRow
+    {
+        public string West { get; set; } = "";
+        public string North { get; set; } = "";
+        public string East { get; set; } = "";
+        public string South { get; set; } = "";
+    }
+
+    public ObservableCollection<BiddingRow> BiddingSummary { get; } = new();
+
     private void UpdateCallHistory()
     {
         // 1. Clear current displays
@@ -190,15 +200,66 @@ public partial class GameTableViewModel : ObservableObject
         LastCallEast = "";
         LastCallWest = "";
         AuctionHistory.Clear();
+        BiddingSummary.Clear();
         
         if (State.CallHistory == null || State.CallHistory.Count == 0) return;
         
-        // UPDATE WINNER STATUS
-        // Logic:
-        // 1. Find who was declarer (State.Declarer string)
-        // 2. Determine if I am partner of declarer
-        // 3. Check State.LastPoints (Absolute for Declarer)
+        // Populate Summary Table
+        // Headers are static: West, North, East, South (or N E S W)
+        // Let's use West, North, East, South as standard reading order? 
+        // Or North East South West. Let's do North East South West.
         
+        // We need to know who started.
+        if (!System.Enum.TryParse<HonorBridge.Engine.Compass>(State.Dealer, out var dealerCompass))
+        {
+            dealerCompass = HonorBridge.Engine.Compass.North; 
+        }
+
+        var currentRow = new BiddingRow();
+        int callsInRow = 0;
+        
+        // If Dealer is NOT North, we need to pad the first row?
+        // Wait, standard bridge pads the *start*.
+        // If Order is N E S W.
+        // If Dealer is East. N is empty.
+        
+        // Let's assume columns: NORTH | EAST | SOUTH | WEST
+        
+        // Fill padding
+        // If Dealer is East (1). N(0) is empty.
+        // If Dealer is South (2). N, E empty.
+        // If Dealer is West (3). N, E, S empty.
+        
+        // Mapping Compass to 0-3 index (N=0, E=1, S=2, W=3)
+        // Compass enum: North=0, East=1, South=2, West=3.
+        
+        int currentColumn = (int)dealerCompass;
+        
+        foreach (var call in State.CallHistory)
+        {
+            // Place call in currentColumn of currentRow
+            if (currentColumn == 0) currentRow.North = call;
+            else if (currentColumn == 1) currentRow.East = call;
+            else if (currentColumn == 2) currentRow.South = call;
+            else if (currentColumn == 3) currentRow.West = call;
+            
+            currentColumn++;
+            if (currentColumn > 3)
+            {
+                BiddingSummary.Add(currentRow);
+                currentRow = new BiddingRow();
+                currentColumn = 0;
+            }
+        }
+        
+        // Add pending row if not empty
+        if (!string.IsNullOrEmpty(currentRow.North) || !string.IsNullOrEmpty(currentRow.East) || 
+            !string.IsNullOrEmpty(currentRow.South) || !string.IsNullOrEmpty(currentRow.West))
+        {
+            BiddingSummary.Add(currentRow);
+        }
+
+        // UPDATE WINNER STATUS (Existing Logic)
         IsWinner = false;
         WinnerName = "";
         
@@ -209,13 +270,10 @@ public partial class GameTableViewModel : ObservableObject
                  bool amIMeOrPartner = (declCompass == HonorBridge.Engine.Compass.South || declCompass == HonorBridge.Engine.Compass.North);
                  int points = State.LastPoints;
                  
-                 // If I am on their team: Win if Points > 0
-                 // If I am Opponent: Win if Points < 0 (They went down)
-                 
-                 if (amIMeOrPartner && points > 0) 
+                  if (amIMeOrPartner && points > 0) 
                  {
                      IsWinner = true;
-                     WinnerName = "Sanjay"; // Or current player name, hardcoded mainly for demand
+                     WinnerName = "Sanjay";
                  }
                  else if (!amIMeOrPartner && points < 0)
                  {
@@ -225,19 +283,14 @@ public partial class GameTableViewModel : ObservableObject
              }
         }
         
-        // 2. Parse dealer...
-        if (!System.Enum.TryParse<HonorBridge.Engine.Compass>(State.Dealer, out var currentBidder))
-        {
-            currentBidder = HonorBridge.Engine.Compass.North; // Fallback
-        }
+        // 2. Parse dealer for Last Call Bubbles
+        var currentBidder = dealerCompass;
         
-        // 3. Iterate history
+        // 3. Iterate history for Bubbles
         foreach (var call in State.CallHistory)
         {
-            // Add to history list
             AuctionHistory.Add($"{currentBidder}: {call}");
             
-            // Update last call for this bidder
             switch (currentBidder)
             {
                 case HonorBridge.Engine.Compass.North: LastCallNorth = call; break;
@@ -245,8 +298,6 @@ public partial class GameTableViewModel : ObservableObject
                 case HonorBridge.Engine.Compass.East: LastCallEast = call; break;
                 case HonorBridge.Engine.Compass.West: LastCallWest = call; break;
             }
-            
-            // Move to next bidder
             currentBidder = (HonorBridge.Engine.Compass)(((int)currentBidder + 1) % 4);
         }
     }

@@ -197,8 +197,13 @@ public class GameRoom
         return decl;
     }
 
+    private bool _isGameLoopRunning = false;
+
     private async Task ProcessGameLoop()
     {
+        if (_isGameLoopRunning) return;
+        _isGameLoopRunning = true;
+
         try 
         {
             bool actionTaken = true;
@@ -214,7 +219,7 @@ public class GameRoom
                     {
                          await Task.Delay(500); // Thinking delay
                          var bid = await ai.GetBidAsync(CurrentAuction, Hands[turn]);
-                         await MakeBidAsync(turn, bid);
+                         await MakeBidAsync(turn, bid, fromGameLoop: true);
                          actionTaken = true;
                     }
                 }
@@ -278,23 +283,9 @@ public class GameRoom
                         }
                         
                         // Execute Play
-                        int beforeTricks = CurrentPlay.CompletedTricks.Count;
-                        CurrentPlay.PlayCard(player: turn, card); 
-                        int afterTricks = CurrentPlay.CompletedTricks.Count;
-
-                        actionTaken = true;
+                        await PlayCardAsync(turn, card, fromGameLoop: true);
                         
-                        if (afterTricks > beforeTricks)
-                        {
-                            // Trick complete. Show result for 3.5s
-                            _showingTrickResult = true;
-                            OnStateChanged?.Invoke();
-                            await Task.Delay(3500);
-                            _showingTrickResult = false;
-                        }
-
-                        CheckPlayComplete();
-                        OnStateChanged?.Invoke();
+                        actionTaken = true;
                     }
                 }
             }
@@ -303,43 +294,17 @@ public class GameRoom
         {
             Console.WriteLine($"Error in Game Loop: {ex.Message}");
         }
-    }
-    
-    private void CheckAuctionComplete()
-    {
-         if (CurrentAuction != null && CurrentAuction.IsComplete)
+        finally
         {
-            if (CurrentAuction.ContractBid != null)
-            {
-                Phase = RoomPhase.Play;
-                CurrentPlay = new DealPlay(Hands, CurrentAuction.ContractBid.Value, CurrentAuction.Declarer!.Value);
-            }
-            else
-            {
-                RotateDealer();
-                StartNewDeal();
-                // Loop continues in StartNewDeal if Dealer is AI
-            }
+            _isGameLoopRunning = false;
         }
     }
     
-    private void CheckPlayComplete()
-    {
-        if (CurrentPlay != null && CurrentPlay.IsGameComplete)
-        {
-            Phase = RoomPhase.Scoring;
-            var doubledState = CurrentAuction!.CurrentDoubledState; 
-            int tricks = (CurrentPlay.Declarer == Compass.North || CurrentPlay.Declarer == Compass.South) 
-                ? CurrentPlay.TricksWonNS 
-                : CurrentPlay.TricksWonEW;
-                
-            LastResult = Scoring.Calculate(CurrentPlay.Contract, doubledState, tricks, Vulnerability, CurrentPlay.Declarer);
-        }
-    }
+    // ... CheckAuction/CheckPlay ...
 
     public event Action? OnStateChanged;
 
-    public async Task MakeBidAsync(Compass seat, Bid bid)
+    public async Task MakeBidAsync(Compass seat, Bid bid, bool fromGameLoop = false)
     {
         if (Phase != RoomPhase.Bidding) throw new InvalidOperationException("Not in bidding phase.");
         if (CurrentAuction == null) throw new InvalidOperationException("No auction active.");
@@ -349,10 +314,13 @@ public class GameRoom
         CheckAuctionComplete();
         OnStateChanged?.Invoke();
         
-        await ProcessGameLoop();
+        if (!fromGameLoop)
+        {
+             _ = ProcessGameLoop();
+        }
     }
 
-    public async Task PlayCardAsync(Compass seat, Card card)
+    public async Task PlayCardAsync(Compass seat, Card card, bool fromGameLoop = false)
     {
         if (Phase != RoomPhase.Play) throw new InvalidOperationException("Not in play phase.");
         if (CurrentPlay == null) throw new InvalidOperationException("No play active.");
@@ -380,23 +348,38 @@ public class GameRoom
         }
         
         // Execute
-        int beforeTricks = CurrentPlay.CompletedTricks.Count;
-        CurrentPlay.PlayCard(player: turn, card);
-        int afterTricks = CurrentPlay.CompletedTricks.Count;
-
-        if (afterTricks > beforeTricks)
+        Console.WriteLine($"[GameRoom] PlayCardAsync: {compass} plays {card}");
+        try
         {
-            // Trick complete. Show result for 3.5s
-            _showingTrickResult = true;
+            int beforeTricks = CurrentPlay.CompletedTricks.Count;
+            CurrentPlay.PlayCard(player: turn, card);
+            int afterTricks = CurrentPlay.CompletedTricks.Count;
+    
+            if (afterTricks > beforeTricks)
+            {
+                // Trick complete. Show result for 3.5s
+                _showingTrickResult = true;
+                OnStateChanged?.Invoke();
+                // If we are in the loop, we can await delay here if we want strictly sync behavior
+                // but ProcessGameLoop handles logic too.
+                // However, blocking here for 3.5s implies the caller waits.
+                await Task.Delay(3500); 
+                _showingTrickResult = false;
+            }
+    
+            CheckPlayComplete();
             OnStateChanged?.Invoke();
-            await Task.Delay(3500);
-            _showingTrickResult = false;
         }
-
-        CheckPlayComplete();
-        OnStateChanged?.Invoke();
+            catch(Exception ex)
+            {
+                Console.WriteLine($"[GameRoom] ERROR Playing Card: {ex.Message}");
+                throw; // Re-throw to caller
+            }
         
-        await ProcessGameLoop();
+        if (!fromGameLoop)
+        {
+            _ = ProcessGameLoop();
+        }
     }
 
     
