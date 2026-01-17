@@ -289,7 +289,7 @@ public class GameRoom
                         }
                         
                         // Execute Play
-                        await PlayCardAsync(turn, card, fromGameLoop: true);
+                        await PlayCardAsync(actualActor, card, fromGameLoop: true);
                         
                         actionTaken = true;
                     }
