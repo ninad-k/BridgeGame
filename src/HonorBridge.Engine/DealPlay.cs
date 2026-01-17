@@ -12,7 +12,7 @@ public class DealPlay
     public Compass Leader => CurrentTrick?.Leader ?? _nextLeader;
     public Compass NextToAct => DetermineNextPlayer();
 
-    public Trick CurrentTrick { get; private set; }
+    public Trick CurrentTrick { get; private set; } = null!;
     public List<Trick> CompletedTricks { get; } = new();
 
     public int TricksWonNS { get; private set; }

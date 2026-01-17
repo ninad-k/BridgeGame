@@ -67,9 +67,16 @@ public class GameRoom
         };
         
         _aiPlayers.Clear();
-        _aiPlayers[Compass.East] = new MonteCarloAI(sims);
-        _aiPlayers[Compass.West] = new MonteCarloAI(sims);
-        _aiPlayers[Compass.North] = new MonteCarloAI(sims); // Bot Partner
+        _aiPlayers[Compass.East] = new MonteCarloAI(null, sims);
+        _aiPlayers[Compass.West] = new MonteCarloAI(null, sims);
+        _aiPlayers[Compass.North] = new MonteCarloAI(null, sims); // Bot Partner
+    }
+
+    public void RestartGame()
+    {
+        RotateDealer();
+        StartNewDeal();
+        OnStateChanged?.Invoke();
     }
 
     public void SetBiddingSystem(string systemName)
@@ -87,7 +94,22 @@ public class GameRoom
         // Update existing AIs
         foreach (var seat in _aiPlayers.Keys.ToList())
         {
-            _aiPlayers[seat] = new HonorBridge.AI.MonteCarloAI(sys);
+            // Preserve current simulation count (skill level)
+            int currentSims = 200; // Default
+            if (_aiPlayers.TryGetValue(seat, out var oldAi))
+            {
+                // We can't easily read _simulationCount it's private.
+                // But we know _currentLevel.
+                currentSims = _currentLevel switch
+                {
+                    AILevel.Beginner => 50,
+                    AILevel.Intermediate => 100,
+                    AILevel.Advanced => 250,
+                    AILevel.Pro => 500,
+                    _ => 500
+                };
+            }
+            _aiPlayers[seat] = new HonorBridge.AI.MonteCarloAI(sys, currentSims);
         }
     }
     
@@ -96,7 +118,15 @@ public class GameRoom
         if (_seats[seat] != null) return; // Occupied by human
         
         _seats[seat] = $"Bot-{seat}";
-        _aiPlayers[seat] = new HonorBridge.AI.MonteCarloAI(CurrentBiddingSystem);
+        int sims = _currentLevel switch
+        {
+            AILevel.Beginner => 50,
+            AILevel.Intermediate => 100,
+            AILevel.Advanced => 250,
+            AILevel.Pro => 500,
+            _ => 500
+        };
+        _aiPlayers[seat] = new HonorBridge.AI.MonteCarloAI(CurrentBiddingSystem, sims);
         CheckStart();
     }
 

@@ -6,7 +6,7 @@ namespace HonorBridge.Engine;
 
 public class Deck
 {
-    private List<Card> _cards;
+    private List<Card> _cards = null!;
     private Random _rng;
 
     public Deck()
