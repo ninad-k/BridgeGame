@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using HonorBridge.Server.Services;
-using HonorBridge.Server.Models;
+using HonorBridge.Shared.Models;
 using HonorBridge.Engine;
 
 namespace HonorBridge.Server.Hubs;

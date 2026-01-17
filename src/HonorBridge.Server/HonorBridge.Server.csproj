@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\HonorBridge.Engine\HonorBridge.Engine.csproj" />
     <ProjectReference Include="..\HonorBridge.AI\HonorBridge.AI.csproj" />
+    <ProjectReference Include="..\HonorBridge.Shared\HonorBridge.Shared.csproj" />
   </ItemGroup>
 
 </Project>

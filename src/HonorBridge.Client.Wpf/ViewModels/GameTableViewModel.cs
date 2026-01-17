@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HonorBridge.Client.Wpf.Services;
-using HonorBridge.Server.Models;
+using HonorBridge.Shared.Models;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 

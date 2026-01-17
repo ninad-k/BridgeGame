@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace HonorBridge.Server.Models;
+namespace HonorBridge.Shared.Models;
 
 public class GameStateDto
 {

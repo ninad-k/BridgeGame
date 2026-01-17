@@ -25,7 +25,7 @@ public partial class MainViewModel : ObservableObject
         _signalR.StateUpdated += OnStateUpdated;
     }
     
-    private void OnStateUpdated(HonorBridge.Server.Models.GameStateDto state)
+    private void OnStateUpdated(HonorBridge.Shared.Models.GameStateDto state)
     {
         // Auto-navigate to Table if joined a room
         if (CurrentView is LobbyViewModel && !string.IsNullOrEmpty(state.RoomId))

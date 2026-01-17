@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HonorBridge.Engine;
-using HonorBridge.Server.Models;
+using HonorBridge.Shared.Models;
 using HonorBridge.AI;
 
 namespace HonorBridge.Server.Services;
