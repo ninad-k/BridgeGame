@@ -300,7 +300,37 @@ public class GameRoom
         }
     }
     
-    // ... CheckAuction/CheckPlay ...
+    private void CheckAuctionComplete()
+    {
+         if (CurrentAuction != null && CurrentAuction.IsComplete)
+        {
+            if (CurrentAuction.ContractBid != null)
+            {
+                Phase = RoomPhase.Play;
+                CurrentPlay = new DealPlay(Hands, CurrentAuction.ContractBid.Value, CurrentAuction.Declarer!.Value);
+            }
+            else
+            {
+                RotateDealer();
+                StartNewDeal();
+                // Loop continues in StartNewDeal if Dealer is AI
+            }
+        }
+    }
+    
+    private void CheckPlayComplete()
+    {
+        if (CurrentPlay != null && CurrentPlay.IsGameComplete)
+        {
+            Phase = RoomPhase.Scoring;
+            var doubledState = CurrentAuction!.CurrentDoubledState; 
+            int tricks = (CurrentPlay.Declarer == Compass.North || CurrentPlay.Declarer == Compass.South) 
+                ? CurrentPlay.TricksWonNS 
+                : CurrentPlay.TricksWonEW;
+                
+            LastResult = Scoring.Calculate(CurrentPlay.Contract, doubledState, tricks, Vulnerability, CurrentPlay.Declarer);
+        }
+    }
 
     public event Action? OnStateChanged;
 
@@ -348,7 +378,7 @@ public class GameRoom
         }
         
         // Execute
-        Console.WriteLine($"[GameRoom] PlayCardAsync: {compass} plays {card}");
+        Console.WriteLine($"[GameRoom] PlayCardAsync: {seat} plays {card}");
         try
         {
             int beforeTricks = CurrentPlay.CompletedTricks.Count;
