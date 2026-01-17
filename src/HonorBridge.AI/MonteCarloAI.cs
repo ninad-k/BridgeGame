@@ -9,12 +9,13 @@ namespace HonorBridge.AI;
 public class MonteCarloAI : IBridgePlayer
 {
     private readonly Random _rng = new();
-    private const int SIMULATION_COUNT = 200; // Increased for better skill
+    private readonly int _simulationCount;
     private readonly IBiddingSystem _biddingSystem;
 
-    public MonteCarloAI(IBiddingSystem? system = null)
+    public MonteCarloAI(IBiddingSystem? system = null, int simulationCount = 200)
     {
         _biddingSystem = system ?? ParametricBidder.SAYC;
+        _simulationCount = simulationCount;
     }
 
     public Task<Bid> GetBidAsync(Auction auction, Hand myHand)
@@ -57,17 +58,30 @@ public class MonteCarloAI : IBridgePlayer
             // Run Sim
             var unknownCards = GetUnknownCards(play, myHand);
             
+            // Monte Carlo Simulation
+            // The `legalMoves` variable is already defined and populated above.
+            // The `if (legalMoves.Count == 1) return legalMoves[0];` is also handled above.
+
+            Dictionary<Card, int> winCounts = new();
+            foreach (var m in legalMoves) winCounts[m] = 0;
+
+            // Parallel.For for speed? Or simple loop.
+            // For 200 sims, parallel is good.
+            
+            object lockObj = new object();
+            
             foreach (var move in legalMoves)
             {
                 double wins = 0;
-                for (int i = 0; i < SIMULATION_COUNT; i++)
+                Parallel.For(0, _simulationCount, _ => 
                 {
-                    // "Simple" Monte Carlo:
-                    // Just play the move, then random for others.
-                    
+                    // Clone state (heavy?)
+                    // We need a lightweight clone or fast forward.
+                    // Our DealPlay.Clone() is robust but maybe slow.
+                    // ...       
                      // Random Playout
                      wins += SimulateRandomPlayout(play, myHand, mySeat, move, unknownCards);
-                }
+                });
                 
                 if (wins > bestScore)
                 {

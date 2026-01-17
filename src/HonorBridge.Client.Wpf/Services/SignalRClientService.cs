@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.AspNetCore.SignalR.Client;
 using HonorBridge.Shared.Models;
 using HonorBridge.Engine; // For Compass enum if needed, though DTOs use strings mostly.
 
@@ -125,5 +126,17 @@ public class SignalRClientService
     {
         if (_connection == null) return;
         await _connection.InvokeAsync("SetBiddingSystem", systemName);
+    }
+    
+    public async Task SetAILevel(AILevel level)
+    {
+        if (_connection == null) return;
+        await _connection.InvokeAsync("SetAILevel", level);
+    }
+    
+    public async Task RestartGame()
+    {
+        if (_connection == null) return;
+        await _connection.InvokeAsync("RestartGame");
     }
 }

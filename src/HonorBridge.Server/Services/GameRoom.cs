@@ -37,7 +37,8 @@ public class GameRoom
     // Setting
     public IBiddingSystem CurrentBiddingSystem { get; set; } = ParametricBidder.SAYC;
 
-    private readonly Dictionary<Compass, IBridgePlayer> _aiPlayers = new();
+    private readonly Dictionary<Compass, MonteCarloAI> _aiPlayers = new();
+    private AILevel _currentLevel = AILevel.Pro;
 
     public GameRoom(string roomId)
     {
@@ -45,6 +46,30 @@ public class GameRoom
         Deck = new Deck();
         // Randomize Dealer
         Dealer = (Compass)new Random().Next(4);
+        InitializeAI();
+    }
+    
+    public void SetAILevel(AILevel level)
+    {
+        _currentLevel = level;
+        InitializeAI();
+    }
+    
+    private void InitializeAI()
+    {
+        int sims = _currentLevel switch
+        {
+            AILevel.Beginner => 20,
+            AILevel.Intermediate => 50,
+            AILevel.Advanced => 100,
+            AILevel.Pro => 200,
+            _ => 200
+        };
+        
+        _aiPlayers.Clear();
+        _aiPlayers[Compass.East] = new MonteCarloAI(sims);
+        _aiPlayers[Compass.West] = new MonteCarloAI(sims);
+        _aiPlayers[Compass.North] = new MonteCarloAI(sims); // Bot Partner
     }
 
     public void SetBiddingSystem(string systemName)

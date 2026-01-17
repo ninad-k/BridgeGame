@@ -11,6 +11,24 @@ namespace HonorBridge.Client.Wpf.Controls;
 public partial class FireworksControl : UserControl
 {
     private readonly Random _rng = new();
+    
+    public static readonly DependencyProperty IsPlayingProperty =
+        DependencyProperty.Register("IsPlaying", typeof(bool), typeof(FireworksControl), 
+            new PropertyMetadata(false, OnIsPlayingChanged));
+
+    public bool IsPlaying
+    {
+        get { return (bool)GetValue(IsPlayingProperty); }
+        set { SetValue(IsPlayingProperty, value); }
+    }
+
+    private static void OnIsPlayingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is FireworksControl ctrl && (bool)e.NewValue)
+        {
+            ctrl.Start();
+        }
+    }
 
     public FireworksControl()
     {

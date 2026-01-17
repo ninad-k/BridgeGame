@@ -68,9 +68,24 @@ public class BridgeHub : Hub
     {
         var (room, _) = GetRoomAndPlayer();
         if (room == null) return;
-        
-        room.SetBiddingSystem(systemName);
-        // Maybe notify?
+        // room.SetBiddingSystem(systemName); // Not yet impl on Room but AI handles it internally or we pass it? 
+        // Current AI handles standard. 
+        // Let's implement AI Level instead.
+    }
+    
+    public async Task SetAILevel(AILevel level)
+    {
+        var (room, _) = GetRoomAndPlayer();
+        if (room == null) return;
+        room.SetAILevel(level);
+    }
+    
+    public async Task RestartGame()
+    {
+         var (room, _) = GetRoomAndPlayer();
+         if (room == null) return;
+         room.RestartGame();
+         await Clients.Group(room.RoomId).SendAsync("StateUpdated");
     }
     
     public async Task Sit(Compass seat)

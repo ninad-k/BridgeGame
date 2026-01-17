@@ -8,7 +8,25 @@
         Title="Honor Bridge - Tournament Edition" Height="650" Width="1000"
         Icon="/Assets/icon.png"
         WindowStartupLocation="CenterScreen">
-    <Grid>
-        <ContentControl Content="{Binding CurrentView}" />
-    </Grid>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" Background="#F0F0F0" Padding="5">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New Game / Play Again" Command="{Binding NewGameCommand}"/>
+                <Separator/>
+                <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
+            </MenuItem>
+            <MenuItem Header="_Options">
+                <MenuItem Header="AI Level">
+                    <MenuItem Header="Beginner" Command="{Binding SetLevelCommand}" CommandParameter="Beginner"/>
+                    <MenuItem Header="Intermediate" Command="{Binding SetLevelCommand}" CommandParameter="Intermediate"/>
+                    <MenuItem Header="Advanced" Command="{Binding SetLevelCommand}" CommandParameter="Advanced"/>
+                    <MenuItem Header="Pro (Default)" Command="{Binding SetLevelCommand}" CommandParameter="Pro"/>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+        
+        <Grid>
+            <ContentControl Content="{Binding CurrentView}" />
+        </Grid>
+    </DockPanel>
 </Window>

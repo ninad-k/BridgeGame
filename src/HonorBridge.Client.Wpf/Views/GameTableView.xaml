@@ -411,7 +411,10 @@
             
             <Grid>
                  <!-- Fireworks Background (Only if Winner) -->
-                 <local:FireworksControl x:Name="Fireworks" IsHitTestVisible="False" Visibility="{Binding IsWinner, Converter={StaticResource BoolToVis}}"/>
+                 <!-- Bind IsPlaying to IsWinner. Also keep Visibility for safety but IsPlaying triggers the anim -->
+                 <local:FireworksControl x:Name="Fireworks" IsHitTestVisible="False" 
+                                        Visibility="{Binding IsWinner, Converter={StaticResource BoolToVis}}"
+                                        IsPlaying="{Binding IsWinner}"/>
 
                 <Border Background="White" CornerRadius="10" Padding="40" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="400">
                     <StackPanel>
@@ -424,10 +427,17 @@
                         
                         <TextBlock Text="{Binding State.Contract, StringFormat='Contract: {0}'}" FontSize="18" Foreground="#555" HorizontalAlignment="Center"/>
                         <TextBlock Text="{Binding State.LastScore}" FontSize="28" FontWeight="Bold" Foreground="#007ACC" HorizontalAlignment="Center" Margin="0,10,0,20" TextWrapping="Wrap" TextAlignment="Center"/>
-                        
-                         <TextBlock Text="Check Walkthrough to restart or use Lobby." FontSize="10" Foreground="#888" HorizontalAlignment="Center" Margin="0,5"/>
-                    </StackPanel>
-                </Border>
+
+                        <!-- Restart Button in Game View -->
+                        <!-- Access MainViewModel command via Window DataContext -->
+                        <Button Command="{Binding DataContext.NewGameCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                                Content="Play Again (Random Hand)" 
+                                Padding="15,10" Background="#007ACC" Foreground="White" FontWeight="Bold" Margin="0,10,0,0"
+                                HorizontalAlignment="Center"/>
+                            
+                     <TextBlock Text="Or check menu for Options." FontSize="10" Foreground="#888" HorizontalAlignment="Center" Margin="0,5"/>
+                </StackPanel>
+            </Border>
             </Grid>
         </Border>
 
