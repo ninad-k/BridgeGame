@@ -66,7 +66,7 @@ public class MonteCarloAI : IBridgePlayer
                     // Just play the move, then random for others.
                     
                      // Random Playout
-                     wins += SimulateRandomPlayout(play, myHand, mySeat, move, unknown);
+                     wins += SimulateRandomPlayout(play, myHand, mySeat, move, unknownCards);
                 }
                 
                 if (wins > bestScore)

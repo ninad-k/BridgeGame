@@ -8,6 +8,9 @@ public class ParametricBidder : IBiddingSystem
     public string Name { get; }
     
     // Configuration
+    public int NtMin { get; }
+    public int NtMax { get; }
+    public int MajorMinLength { get; }
     public bool IsStrongClub { get; }
 
     public ParametricBidder(string name, int ntMin, int ntMax, int majorMinLength, bool isStrongClub = false)
@@ -113,7 +116,7 @@ public class ParametricBidder : IBiddingSystem
 
         if (isPartner)
         {
-             return EvaluatePartnerResponse(lastBid, hcp, s, h, d, c);
+             return EvaluatePartnerResponse(lastBid, hcp, balanced, s, h, d, c);
         }
         else
         {
@@ -121,7 +124,7 @@ public class ParametricBidder : IBiddingSystem
         }
     }
 
-    private Bid EvaluatePartnerResponse(Bid lastBid, int hcp, int s, int h, int d, int c)
+    private Bid EvaluatePartnerResponse(Bid lastBid, int hcp, bool balanced, int s, int h, int d, int c)
     {
         // Simple System:
         // 0-5 HCP: Pass
