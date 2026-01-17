@@ -48,4 +48,43 @@ public partial class LobbyViewModel : ObservableObject
             IsBusy = false;
         }
     }
+
+    [RelayCommand]
+    private async Task PlaySinglePlayer()
+    {
+        if (string.IsNullOrWhiteSpace(PlayerName))
+        {
+            MessageBox.Show("Please enter your name.");
+            return;
+        }
+
+        IsBusy = true;
+        try
+        {
+            // Connect first
+            await _signalR.Connect("http://localhost:5000/bridge");
+            
+            // 1. Generate unique Room ID
+            var spRoomId = "SP-" + System.Guid.NewGuid().ToString().Substring(0, 8);
+            
+            // 2. Join Room
+            await _signalR.JoinRoom(spRoomId, PlayerName);
+            
+            // 3. Sit user at South (standard for single player)
+            await _signalR.Sit("South");
+            
+            // 4. Add Bots
+            await _signalR.AddBot("West");
+            await _signalR.AddBot("North");
+            await _signalR.AddBot("East");
+        }
+        catch (System.Exception ex)
+        {
+            MessageBox.Show($"Error starting single player: {ex.Message}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
 }

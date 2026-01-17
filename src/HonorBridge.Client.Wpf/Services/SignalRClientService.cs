@@ -113,4 +113,11 @@ public class SignalRClientService
     {
         await _connection.InvokeAsync("PlayCard", cardShortString);
     }
+
+    public async Task AddBot(string compass)
+    {
+        // Hub expects string for AddBot?
+        // Hub signature: public async Task AddBot(string compass)
+        await _connection.InvokeAsync("AddBot", compass);
+    }
 }
