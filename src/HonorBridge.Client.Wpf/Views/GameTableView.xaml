@@ -312,24 +312,24 @@
             <!-- TRICK CARDS -->
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="300" Height="300">
                    <!-- North Card -->
-                <ContentControl Content="{Binding CurrentTrick[North]}" ContentTemplate="{StaticResource CardTemplate}" 
+                <ContentControl Content="{Binding CardNorth}" ContentTemplate="{StaticResource CardTemplate}" 
                                 HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"
-                                Visibility="{Binding CurrentTrick[North], Converter={StaticResource NullToVis}}"/>
+                                Visibility="{Binding CardNorth, Converter={StaticResource NullToVis}}"/>
                 
                 <!-- South Card -->
-                <ContentControl Content="{Binding CurrentTrick[South]}" ContentTemplate="{StaticResource CardTemplate}" 
+                <ContentControl Content="{Binding CardSouth}" ContentTemplate="{StaticResource CardTemplate}" 
                                 HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20"
-                                Visibility="{Binding CurrentTrick[South], Converter={StaticResource NullToVis}}"/>
+                                Visibility="{Binding CardSouth, Converter={StaticResource NullToVis}}"/>
 
                 <!-- West Card -->
-                <ContentControl Content="{Binding CurrentTrick[West]}" ContentTemplate="{StaticResource CardTemplate}" 
+                <ContentControl Content="{Binding CardWest}" ContentTemplate="{StaticResource CardTemplate}" 
                                 HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"
-                                Visibility="{Binding CurrentTrick[West], Converter={StaticResource NullToVis}}"/>
+                                Visibility="{Binding CardWest, Converter={StaticResource NullToVis}}"/>
 
                 <!-- East Card -->
-                <ContentControl Content="{Binding CurrentTrick[East]}" ContentTemplate="{StaticResource CardTemplate}" 
+                <ContentControl Content="{Binding CardEast}" ContentTemplate="{StaticResource CardTemplate}" 
                                 HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,20,0"
-                                Visibility="{Binding CurrentTrick[East], Converter={StaticResource NullToVis}}"/>
+                                Visibility="{Binding CardEast, Converter={StaticResource NullToVis}}"/>
             </Grid>
             
             <!-- WINNER ARROW OVERLAY -->
