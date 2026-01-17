@@ -153,6 +153,9 @@ public partial class GameTableViewModel : ObservableObject
         
         UpdateBiddingAvailability();
         UpdateCallHistory();
+        
+        System.Diagnostics.Debug.WriteLine($"[DEBUG] State Update: MySeat={State.MySeat}, Next={State.NextToAct}, Phase={State.Phase}, IsMyTurn={(!string.IsNullOrEmpty(state.MySeat) && state.NextToAct == state.MySeat)}");
+        System.Console.WriteLine($"[DEBUG] State Update: MySeat={State.MySeat}, Next={State.NextToAct}, Phase={State.Phase}, IsMyTurn={(!string.IsNullOrEmpty(state.MySeat) && state.NextToAct == state.MySeat)}");
     }
 
     private void UpdateCallHistory()
