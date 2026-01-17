@@ -62,9 +62,10 @@ public class GameRoom
             AILevel.Beginner => 25,
             AILevel.Intermediate => 50,
             AILevel.Advanced => 100,
-            AILevel.Pro => 200,
-            _ => 200
+            AILevel.Pro => 500,
+            _ => 500
         };
+
         
         _aiPlayers.Clear();
         _aiPlayers[Compass.East] = new MonteCarloAI(null, sims);
@@ -106,9 +107,10 @@ public class GameRoom
                     AILevel.Beginner => 25,
                     AILevel.Intermediate => 50,
                     AILevel.Advanced => 100,
-                    AILevel.Pro => 200,
-                    _ => 200
+                    AILevel.Pro => 500,
+                    _ => 500
                 };
+
             }
             _aiPlayers[seat] = new MonteCarloAI(sys, currentSims);
         }
@@ -124,8 +126,8 @@ public class GameRoom
             AILevel.Beginner => 25,
             AILevel.Intermediate => 50,
             AILevel.Advanced => 100,
-            AILevel.Pro => 200,
-            _ => 200
+            AILevel.Pro => 500,
+            _ => 500
         };
         _aiPlayers[seat] = new MonteCarloAI(CurrentBiddingSystem, sims);
         CheckStart();

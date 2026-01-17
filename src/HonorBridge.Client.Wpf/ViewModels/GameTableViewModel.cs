@@ -40,6 +40,10 @@ public partial class GameTableViewModel : ObservableObject
     
     [ObservableProperty] private bool _isWinner;
     [ObservableProperty] private string _winnerName = "";
+    
+    // Hand Valuation
+    [ObservableProperty] private int _myHCP;
+
 
     // Active Turn Indicators
     [ObservableProperty] private bool _isTurnNorth;
@@ -235,6 +239,8 @@ public partial class GameTableViewModel : ObservableObject
         
         UpdateBiddingAvailability();
         UpdateCallHistory();
+        UpdateHCP();
+
 
         // Update Turn Indicators
         IsTurnNorth = (!string.IsNullOrEmpty(State.NextToAct) && State.NextToAct == "North");
@@ -500,6 +506,30 @@ public partial class GameTableViewModel : ObservableObject
     {
         await _signalR.PlayCard(card);
     }
+    
+    private void UpdateHCP()
+    {
+        int hcp = 0;
+        foreach (var card in MyHand)
+        {
+            hcp += GetCardPoints(card.Rank);
+        }
+        MyHCP = hcp;
+    }
+    
+    private int GetCardPoints(string rank)
+    {
+        return rank switch
+        {
+            "A" => 4,
+            "K" => 3,
+            "Q" => 2,
+            "J" => 1,
+            "T" => 0, // 10
+            _ => 0
+        };
+    }
+
     
     private string GetPartnerSeat(string seat)
     {

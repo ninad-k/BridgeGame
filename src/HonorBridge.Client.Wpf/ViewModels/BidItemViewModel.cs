@@ -16,6 +16,10 @@ public partial class BidItemViewModel : ObservableObject
     [ObservableProperty]
     private bool _isEnabled = true;
 
+    private System.Windows.Media.Brush _baseColor;
+
+    public System.Windows.Media.Brush Foreground => IsEnabled ? _baseColor : System.Windows.Media.Brushes.LightGray;
+
     // Command to execute when clicked
     public ICommand BidCommand { get; }
 
@@ -26,5 +30,13 @@ public partial class BidItemViewModel : ObservableObject
         Strain = strain;
         CallType = callType;
         BidCommand = bidCommand;
+        
+        bool isRed = (strain == "Diamonds" || strain == "Hearts" || strain == "Diamond" || strain == "Heart");
+        _baseColor = isRed ? System.Windows.Media.Brushes.Red : System.Windows.Media.Brushes.Black;
+    }
+
+    partial void OnIsEnabledChanged(bool value)
+    {
+        OnPropertyChanged(nameof(Foreground));
     }
 }
