@@ -54,18 +54,67 @@
             </StackPanel>
         </Border>
 
-        <!-- North Seat -->
+            <!-- North Seat -->
         <Border Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Margin="0,40,0,0">
             <StackPanel>
                 <Button Command="{Binding SitCommand}" CommandParameter="North" Content="Sit North" Visibility="{Binding State.Seats[North], Converter={StaticResource NullToVis}}" />
                 <TextBlock Text="{Binding State.Seats[North]}" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold"/>
+                
+                <!-- Last Call Bubble -->
+                <Border Background="White" CornerRadius="10" Padding="5" Margin="0,5,0,0" HorizontalAlignment="Center">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                             <Setter Property="Visibility" Value="Collapsed"/>
+                             <Style.Triggers>
+                                 <DataTrigger Binding="{Binding State.Phase}" Value="Bidding">
+                                     <Setter Property="Visibility" Value="Visible"/>
+                                 </DataTrigger>
+                                 <DataTrigger Binding="{Binding LastCallNorth}" Value="">
+                                      <Setter Property="Visibility" Value="Collapsed"/>
+                                 </DataTrigger>
+                             </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <TextBlock Text="{Binding LastCallNorth}" FontWeight="Bold" Foreground="Black"/>
+                </Border>
+                
                 <!-- Dummy Hand (if visible) -->
-                <ItemsControl ItemsSource="{Binding DummyHand}" ItemTemplate="{StaticResource CardTemplate}">
+                <ItemsControl ItemsSource="{Binding DummyHand}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                             <Button Command="{Binding DataContext.PlayCardCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                     CommandParameter="{Binding Id}"
+                                     Margin="2" Padding="0" BorderThickness="0" Background="Transparent"
+                                     RenderTransformOrigin="0.5,0.5">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <ContentPresenter/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                         <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="RenderTransform">
+                                                    <Setter.Value>
+                                                       <TranslateTransform Y="-5"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <ContentControl Content="{Binding}" ContentTemplate="{StaticResource CardTemplate}"/>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </StackPanel>
         </Border>
@@ -74,12 +123,48 @@
         <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="20,0,0,0">
              <Button Command="{Binding SitCommand}" CommandParameter="West" Content="Sit West" Visibility="{Binding State.Seats[West], Converter={StaticResource NullToVis}}" />
              <TextBlock Text="{Binding State.Seats[West]}" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold"/>
+             
+             <!-- Last Call Bubble -->
+             <Border Background="White" CornerRadius="10" Padding="5" Margin="0,5,0,0" HorizontalAlignment="Center">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                             <Setter Property="Visibility" Value="Collapsed"/>
+                             <Style.Triggers>
+                                 <DataTrigger Binding="{Binding State.Phase}" Value="Bidding">
+                                     <Setter Property="Visibility" Value="Visible"/>
+                                 </DataTrigger>
+                                 <DataTrigger Binding="{Binding LastCallWest}" Value="">
+                                      <Setter Property="Visibility" Value="Collapsed"/>
+                                 </DataTrigger>
+                             </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <TextBlock Text="{Binding LastCallWest}" FontWeight="Bold" Foreground="Black"/>
+                </Border>
         </StackPanel>
 
         <!-- East Seat -->
         <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="0,0,20,0">
              <Button Command="{Binding SitCommand}" CommandParameter="East" Content="Sit East" Visibility="{Binding State.Seats[East], Converter={StaticResource NullToVis}}" />
              <TextBlock Text="{Binding State.Seats[East]}" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold"/>
+             
+             <!-- Last Call Bubble -->
+             <Border Background="White" CornerRadius="10" Padding="5" Margin="0,5,0,0" HorizontalAlignment="Center">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                             <Setter Property="Visibility" Value="Collapsed"/>
+                             <Style.Triggers>
+                                 <DataTrigger Binding="{Binding State.Phase}" Value="Bidding">
+                                     <Setter Property="Visibility" Value="Visible"/>
+                                 </DataTrigger>
+                                 <DataTrigger Binding="{Binding LastCallEast}" Value="">
+                                      <Setter Property="Visibility" Value="Collapsed"/>
+                                 </DataTrigger>
+                             </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <TextBlock Text="{Binding LastCallEast}" FontWeight="Bold" Foreground="Black"/>
+             </Border>
         </StackPanel>
 
         <!-- South Seat (Me) -->
@@ -87,6 +172,24 @@
             <StackPanel>
                  <Button Command="{Binding SitCommand}" CommandParameter="South" Content="Sit South" Visibility="{Binding State.Seats[South], Converter={StaticResource NullToVis}}" />
                  <TextBlock Text="{Binding State.Seats[South]}" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold"/>
+                 
+                 <!-- Last Call Bubble -->
+                 <Border Background="White" CornerRadius="10" Padding="5" Margin="0,5,0,0" HorizontalAlignment="Center">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                 <Setter Property="Visibility" Value="Collapsed"/>
+                                 <Style.Triggers>
+                                     <DataTrigger Binding="{Binding State.Phase}" Value="Bidding">
+                                         <Setter Property="Visibility" Value="Visible"/>
+                                     </DataTrigger>
+                                     <DataTrigger Binding="{Binding LastCallSouth}" Value="">
+                                          <Setter Property="Visibility" Value="Collapsed"/>
+                                     </DataTrigger>
+                                 </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock Text="{Binding LastCallSouth}" FontWeight="Bold" Foreground="Black"/>
+                 </Border>
                  
                  <!-- My Hand -->
                  <ItemsControl ItemsSource="{Binding MyHand}">

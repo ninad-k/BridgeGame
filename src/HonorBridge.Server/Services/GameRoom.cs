@@ -41,6 +41,8 @@ public class GameRoom
     {
         RoomId = roomId;
         Deck = new Deck();
+        // Randomize Dealer
+        Dealer = (Compass)new Random().Next(4);
     }
 
     public void SetBiddingSystem(string systemName)

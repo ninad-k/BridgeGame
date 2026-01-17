@@ -27,6 +27,14 @@ public partial class GameTableViewModel : ObservableObject
     [ObservableProperty] private CardViewModel? _cardEast;
     [ObservableProperty] private CardViewModel? _cardWest;
     
+    // Display properties for Last Call bubble
+    [ObservableProperty] private string _lastCallNorth = "";
+    [ObservableProperty] private string _lastCallSouth = "";
+    [ObservableProperty] private string _lastCallEast = "";
+    [ObservableProperty] private string _lastCallWest = "";
+
+    public ObservableCollection<string> AuctionHistory { get; } = new();
+
     // Bidding
     public ObservableCollection<BidItemViewModel> BiddingBox { get; } = new();
 
@@ -107,6 +115,44 @@ public partial class GameTableViewModel : ObservableObject
         if (state.CurrentTrick.TryGetValue("West", out var cW)) CardWest = new CardViewModel(cW);
         
         UpdateBiddingAvailability();
+        UpdateCallHistory();
+    }
+
+    private void UpdateCallHistory()
+    {
+        // 1. Clear current displays
+        LastCallNorth = "";
+        LastCallSouth = "";
+        LastCallEast = "";
+        LastCallWest = "";
+        AuctionHistory.Clear();
+        
+        if (State.CallHistory == null || State.CallHistory.Count == 0) return;
+        
+        // 2. Parse dealer to find who started
+        if (!System.Enum.TryParse<HonorBridge.Engine.Compass>(State.Dealer, out var currentBidder))
+        {
+            currentBidder = HonorBridge.Engine.Compass.North; // Fallback
+        }
+        
+        // 3. Iterate history
+        foreach (var call in State.CallHistory)
+        {
+            // Add to history list
+            AuctionHistory.Add($"{currentBidder}: {call}");
+            
+            // Update last call for this bidder
+            switch (currentBidder)
+            {
+                case HonorBridge.Engine.Compass.North: LastCallNorth = call; break;
+                case HonorBridge.Engine.Compass.South: LastCallSouth = call; break;
+                case HonorBridge.Engine.Compass.East: LastCallEast = call; break;
+                case HonorBridge.Engine.Compass.West: LastCallWest = call; break;
+            }
+            
+            // Move to next bidder
+            currentBidder = (HonorBridge.Engine.Compass)(((int)currentBidder + 1) % 4);
+        }
     }
     
     private void UpdateBiddingAvailability()
