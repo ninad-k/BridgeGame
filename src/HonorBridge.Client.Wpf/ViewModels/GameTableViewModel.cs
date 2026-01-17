@@ -239,15 +239,28 @@ public partial class GameTableViewModel : ObservableObject
             if (State.Contract.Contains("XX")) isRedoubled = true;
             else if (State.Contract.Contains("X")) isDoubled = true;
             
-            // NOTE: To correctly enable X/XX, we need to know if the contract belongs to opponents.
-            // As a simplification for this client refactor without changing Server DTO drastically:
-            // We'll rely on server to reject invalid X/XX, OR assume standard flow:
-            // For now, let's enable X if not doubled, enable XX if doubled.
             // (Ignoring side checks for MVP UI task reliability).
+            // (But we MUST check turn order to prevent stuck UI).
         }
+        
+        // TURN ORDER CHECK
+        // If it is NOT my turn, disable everything.
+        // MySeat is now in State.MySeat
+        bool isMyTurn = false;
+        if (!string.IsNullOrEmpty(State.MySeat) && !string.IsNullOrEmpty(State.NextToAct))
+        {
+            if (State.MySeat == State.NextToAct) isMyTurn = true;
+        }
+        
+        // Debug override? No, strict.
         
         foreach (var item in BiddingBox)
         {
+            // Default disabled
+            item.IsEnabled = false;
+            
+            if (!isMyTurn) continue;
+
             if (item.CallType == "Pass")
             {
                 item.IsEnabled = true;

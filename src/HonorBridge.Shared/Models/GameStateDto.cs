@@ -9,6 +9,8 @@ public class GameStateDto
     
     // Seat -> PlayerName
     public Dictionary<string, string?> Seats { get; set; } = new();
+    
+    public string? MySeat { get; set; } // "North", "South" etc.
 
     // My Hand (Card strings like "AS", "2H")
     public List<string> MyHand { get; set; } = new();

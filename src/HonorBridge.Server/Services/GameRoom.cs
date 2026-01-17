@@ -437,6 +437,11 @@ public class GameRoom
             dto.MyHand = Hands[handSource].Cards.Select(c => c.ToShortString()).ToList();
         }
         
+        if (mySeat.HasValue)
+        {
+            dto.MySeat = mySeat.Value.ToString();
+        }
+        
         // Hand Counts
         foreach(var kvp in Hands)
         {
