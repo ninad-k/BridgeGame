@@ -127,34 +127,79 @@ public partial class GameTableViewModel : ObservableObject
         DummyHandWest.Clear();
         DummyHandSouth.Clear();
 
+        // 1. DUMMY HAND (Visible to everyone)
         var dummyCards = state.DummyHand.Select(c => new CardViewModel(c)).ToList();
         
-        bool canPlayDummy = false;
         string dummySeat = "";
-        
         if (!string.IsNullOrEmpty(state.Declarer))
         {
              dummySeat = GetPartnerSeat(state.Declarer);
-             
-             // Logic for Interactivity (unchanged)
-             if (!string.IsNullOrEmpty(state.MySeat) && state.Declarer == state.MySeat)
-             {
-                 if (state.NextToAct == dummySeat) canPlayDummy = true;
-             }
         }
         
         ObservableCollection<CardViewModel> targetCollection = null;
         if (dummySeat == "North") targetCollection = DummyHandNorth;
         else if (dummySeat == "East") targetCollection = DummyHandEast;
         else if (dummySeat == "West") targetCollection = DummyHandWest;
-        else if (dummySeat == "South") targetCollection = DummyHandSouth; // Should be MyHand usually, but if distinct...
+        else if (dummySeat == "South") targetCollection = DummyHandSouth;
         
+        // Populate Dummy
         if (targetCollection != null)
         {
             foreach(var c in dummyCards)
             {
-                c.IsEnabled = canPlayDummy;
+                // Can I control Dummy?
+                // Logic: Declarer controls Dummy.
+                // If I am Declarer (Declarer==MySeat), I control Dummy.
+                // If I am Partner of Declarer (Declarer==PartnerSeat), and EffectiveDeclarer logic gave me control?
+                // The Turn Logic is separate.
+                
+                // Simplified: If Turn == DummySeat, and I control Dummy, Enable.
+                // If Declarer == MySeat, I control Dummy.
+                
+                bool isDummyTurn = (!string.IsNullOrEmpty(state.NextToAct) && state.NextToAct == dummySeat);
+                
+                // If I am Declarer, I play Dummy.
+                if (!string.IsNullOrEmpty(State.MySeat) && State.Declarer == State.MySeat)
+                {
+                    c.IsEnabled = isDummyTurn;
+                }
+                else 
+                {
+                    c.IsEnabled = false; 
+                }
+                
                 targetCollection.Add(c);
+            }
+        }
+        
+        // 2. PARTNER HAND (Visible ONLY to me if I am taking over)
+        if (state.PartnerHand != null && state.PartnerHand.Count > 0)
+        {
+            // PartnerHand is the Declarer's Hand (North, if I am South).
+            // It should be displayed in the Partner's Seat (North).
+            string partnerSeat = GetPartnerSeat(State.MySeat ?? "");
+            
+            ObservableCollection<CardViewModel> partnerCollection = null;
+            if (partnerSeat == "North") partnerCollection = DummyHandNorth; // Reuse visual slot
+            else if (partnerSeat == "East") partnerCollection = DummyHandEast;
+            else if (partnerSeat == "West") partnerCollection = DummyHandWest;
+            else if (partnerSeat == "South") partnerCollection = DummyHandSouth;
+            
+            if (partnerCollection != null)
+            {
+                // Only clear if empty? Or simple append? 
+                // "DummyHandNorth" might be empty if Dummy is South.
+                // So this populates the empty Top slot with Partner's cards.
+                
+                var partnerCards = state.PartnerHand.Select(c => new CardViewModel(c)).ToList();
+                foreach(var c in partnerCards)
+                {
+                    // Enable if it is Partner's Turn?
+                    // Yes, I am playing for Partner.
+                    bool isPartnerTurn = (!string.IsNullOrEmpty(state.NextToAct) && state.NextToAct == partnerSeat);
+                    c.IsEnabled = isPartnerTurn;
+                    partnerCollection.Add(c);
+                }
             }
         }
         

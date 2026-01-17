@@ -436,18 +436,22 @@ public class GameRoom
         if (Hands.Count > 0 && mySeat.HasValue && Hands.ContainsKey(mySeat.Value))
         {
             Compass handSource = mySeat.Value;
+            dto.MyHand = Hands[handSource].Cards.Select(c => c.ToShortString()).ToList();
+            
             if (CurrentPlay != null)
             {
                 var eff = GetEffectiveDeclarer();
                 if (eff == mySeat.Value && CurrentPlay.Declarer != mySeat.Value)
                 {
                     // If I am Effective Declarer (taking over for Bot Declarer), 
-                    // I need to see the Bot's hand in "My Hand" area to play it.
-                    handSource = CurrentPlay.Declarer;
+                    // I need to see the Partner's hand (Declarer's Hand).
+                    // We send this as PartnerHand.
+                    if (Hands.ContainsKey(CurrentPlay.Declarer))
+                    {
+                        dto.PartnerHand = Hands[CurrentPlay.Declarer].Cards.Select(c => c.ToShortString()).ToList();
+                    }
                 }
             }
-            
-            dto.MyHand = Hands[handSource].Cards.Select(c => c.ToShortString()).ToList();
         }
         
         if (mySeat.HasValue)

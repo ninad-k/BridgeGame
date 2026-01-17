@@ -25,6 +25,15 @@ public partial class MainViewModel : ObservableObject
         CurrentView = _serviceProvider.GetRequiredService<LobbyViewModel>();
         
         _signalR.StateUpdated += OnStateUpdated;
+        _signalR.ErrorReceived += OnErrorReceived;
+    }
+    
+    private void OnErrorReceived(string message)
+    {
+        System.Windows.Application.Current.Dispatcher.Invoke(() => 
+        {
+            System.Windows.MessageBox.Show(message, "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+        });
     }
     
     private void OnStateUpdated(HonorBridge.Shared.Models.GameStateDto state)

@@ -228,6 +228,58 @@
                         <TextBlock Text="{Binding LastCallSouth}" FontWeight="Bold" Foreground="Black"/>
                  </Border>
                  
+                 <!-- Dummy Hand (South) - visible if I am Dummy and Partner plays -->
+                 <ItemsControl ItemsSource="{Binding DummyHandSouth}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                             <Button Command="{Binding DataContext.PlayCardCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                     CommandParameter="{Binding Id}"
+                                     Content="{Binding}"
+                                     ContentTemplate="{StaticResource CardTemplate}"
+                                     Margin="2" Padding="0" BorderThickness="0" Background="Transparent"
+                                     RenderTransformOrigin="0.5,0.5">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <ContentPresenter/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                         <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="RenderTransform">
+                                                    <Setter.Value>
+                                                       <TranslateTransform Y="-20"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+
+                     <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="Margin" Value="-35,0,0,0"/> 
+                            <Setter Property="Panel.ZIndex" Value="0"/>
+                             <Style.Triggers>
+                                 <Trigger Property="IsMouseOver" Value="True">
+                                     <Setter Property="Panel.ZIndex" Value="100"/>
+                                 </Trigger>
+                             </Style.Triggers>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                </ItemsControl>
+
                  <!-- My Hand -->
                  <ItemsControl ItemsSource="{Binding MyHand}">
                     <ItemsControl.ItemsPanel>

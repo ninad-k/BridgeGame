@@ -28,6 +28,7 @@ public class GameStateDto
     // Play Info
     public Dictionary<string, string> CurrentTrick { get; set; } = new(); // Seat -> Card
     public List<string> DummyHand { get; set; } = new(); // Visible during play
+    public List<string> PartnerHand { get; set; } = new(); // Visible for Double Dummy / Partner Takeover
     public int TricksNS { get; set; }
     public int TricksEW { get; set; }
     
