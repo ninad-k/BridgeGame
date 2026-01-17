@@ -358,4 +358,15 @@ public partial class GameTableViewModel : ObservableObject
     {
         await _signalR.PlayCard(card);
     }
+    
+    private string GetPartnerSeat(string seat)
+    {
+        if (seat == "North") return "South";
+        if (seat == "South") return "North";
+        if (seat == "East") return "West";
+        if (seat == "West") return "East";
+        return "";
+    }
+    
+    private string GetPartner(string seat) => GetPartnerSeat(seat);
 }
